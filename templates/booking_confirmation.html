@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmed - RentIt</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4f46e5',
+                        primaryDark: '#4338ca',
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-sans bg-gradient-to-br from-green-50 to-blue-50 min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-2xl w-full">
+        <!-- Success Animation -->
+        <div class="text-center mb-8 animate-bounce">
+            <div class="w-24 h-24 bg-green-500 rounded-full flex items-center justify-center mx-auto shadow-2xl">
+                <i class="fa-solid fa-check text-white text-5xl"></i>
+            </div>
+        </div>
+
+        <!-- Confirmation Card -->
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div class="bg-gradient-to-r from-green-500 to-green-600 p-8 text-center">
+                <h1 class="text-3xl font-bold text-white mb-2">Booking Confirmed!</h1>
+                <p class="text-green-100">Your rental has been successfully booked</p>
+            </div>
+
+            <div class="p-8">
+                <!-- Booking Details -->
+                <div id="booking-details" class="space-y-6">
+                    <!-- Will be populated by JS -->
+                </div>
+
+                <!-- Actions -->
+                <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <a href="/" class="block text-center bg-primary hover:bg-primaryDark text-white font-bold py-4 rounded-xl transition shadow-lg">
+                        <i class="fa-solid fa-home mr-2"></i>Back to Home
+                    </a>
+                    <button onclick="window.print()" class="bg-white border-2 border-primary text-primary hover:bg-primary hover:text-white font-bold py-4 rounded-xl transition">
+                        <i class="fa-solid fa-print mr-2"></i>Print Receipt
+                    </button>
+                </div>
+
+                <!-- Support -->
+                <div class="mt-8 text-center p-6 bg-gray-50 rounded-xl">
+                    <p class="text-sm text-gray-600 mb-3">Need help with your booking?</p>
+                    <div class="flex items-center justify-center gap-6">
+                        <a href="#" class="text-primary hover:text-primaryDark font-bold text-sm">
+                            <i class="fa-solid fa-phone mr-1"></i>Call Support
+                        </a>
+                        <a href="#" class="text-primary hover:text-primaryDark font-bold text-sm">
+                            <i class="fa-solid fa-envelope mr-1"></i>Email Us
+                        </a>
+                        <a href="#" class="text-primary hover:text-primaryDark font-bold text-sm">
+                            <i class="fa-solid fa-comment mr-1"></i>Live Chat
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Info -->
+        <div class="mt-6 text-center text-sm text-gray-600">
+            <p>A confirmation email has been sent to your registered email address</p>
+        </div>
+    </div>
+
+    <script>
+        // Get booking ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const bookingId = urlParams.get('id');
+
+        // Get booking from localStorage
+        const bookings = JSON.parse(localStorage.getItem('rentit_bookings') || '[]');
+        const booking = bookings.find(b => b.bookingId === bookingId);
+
+        if (booking) {
+            document.getElementById('booking-details').innerHTML = `
+                <div class="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-sm font-bold text-gray-600">Booking ID</span>
+                        <span class="text-lg font-bold text-primary">${booking.bookingId}</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-bold text-gray-600">Status</span>
+                        <span class="px-4 py-1 bg-green-500 text-white text-sm font-bold rounded-full">Confirmed</span>
+                    </div>
+                </div>
+
+                <div class="border border-gray-200 rounded-xl p-6">
+                    <h3 class="font-bold text-lg text-slate-900 mb-4">Item Details</h3>
+                    <div class="flex gap-4">
+                        <img src="${booking.item.img}" class="w-24 h-24 rounded-xl object-cover" alt="${booking.item.title}">
+                        <div class="flex-1">
+                            <h4 class="font-bold text-slate-900 mb-1">${booking.item.title}</h4>
+                            <p class="text-sm text-gray-500 mb-2">${booking.item.price} ${booking.item.unit}</p>
+                            <div class="flex items-center gap-1">
+                                <i class="fa-solid fa-star text-yellow-500 text-xs"></i>
+                                <span class="text-xs font-bold">${booking.item.rating}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border border-gray-200 rounded-xl p-6">
+                    <h3 class="font-bold text-lg text-slate-900 mb-4">Rental Period</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm text-gray-600 mb-1">Start Date</p>
+                            <p class="font-bold text-slate-900">${new Date(booking.startDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600 mb-1">End Date</p>
+                            <p class="font-bold text-slate-900">${new Date(booking.endDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border border-gray-200 rounded-xl p-6">
+                    <h3 class="font-bold text-lg text-slate-900 mb-4">Delivery Address</h3>
+                    <p class="text-gray-700">${booking.address.line1}</p>
+                    <p class="text-gray-700">${booking.address.city}, ${booking.address.state} - ${booking.address.pincode}</p>
+                    <p class="text-gray-700 mt-2"><i class="fa-solid fa-phone mr-2 text-primary"></i>${booking.phone}</p>
+                </div>
+
+                ${booking.notes ? `
+                <div class="border border-gray-200 rounded-xl p-6">
+                    <h3 class="font-bold text-lg text-slate-900 mb-2">Special Instructions</h3>
+                    <p class="text-gray-700">${booking.notes}</p>
+                </div>
+                ` : ''}
+            `;
+        } else {
+            document.getElementById('booking-details').innerHTML = `
+                <div class="text-center py-12">
+                    <i class="fa-solid fa-exclamation-circle text-4xl text-gray-300 mb-4"></i>
+                    <p class="text-gray-500">Booking not found</p>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

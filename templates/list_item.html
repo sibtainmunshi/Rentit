@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List Your Item - Rentit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4f46e5',
+                        primaryDark: '#4338ca',
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-sans bg-gray-50">
+    
+    <!-- Navbar -->
+    <nav class="bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="/" class="flex items-center gap-2.5 group">
+                    <div class="relative flex items-center justify-center w-10 h-10 bg-slate-900 rounded-xl shadow-lg">
+                        <i class="fa-solid fa-cube text-white text-lg"></i>
+                    </div>
+                    <span class="text-2xl font-bold text-slate-900">Rentit</span>
+                </a>
+                <a href="/" class="text-gray-600 hover:text-slate-900 font-medium">
+                    <i class="fa-solid fa-arrow-left mr-2"></i> Back to Home
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-4xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary to-purple-600 rounded-2xl mb-6 shadow-xl">
+                <i class="fa-solid fa-rocket text-white text-3xl"></i>
+            </div>
+            <h1 class="text-4xl font-bold text-slate-900 mb-3">Become a Host</h1>
+            <p class="text-lg text-gray-600">List your item and start earning today</p>
+        </div>
+
+        <!-- Progress Steps -->
+        <div class="flex items-center justify-center mb-12">
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold">1</div>
+                    <span class="font-medium text-slate-900">Item Details</span>
+                </div>
+                <div class="w-12 h-0.5 bg-gray-300"></div>
+                <div class="flex items-center gap-2">
+                    <div class="w-10 h-10 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold">2</div>
+                    <span class="font-medium text-gray-500">Photos</span>
+                </div>
+                <div class="w-12 h-0.5 bg-gray-300"></div>
+                <div class="flex items-center gap-2">
+                    <div class="w-10 h-10 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold">3</div>
+                    <span class="font-medium text-gray-500">Review</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Card -->
+        <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+            <form id="listing-form" onsubmit="submitListing(event)" class="space-y-6">
+                
+                <!-- Category Selection (Big Cards) -->
+                <div>
+                    <label class="block text-lg font-bold text-slate-900 mb-4">What are you listing?</label>
+                    <div class="grid grid-cols-3 gap-4">
+                        <label class="relative cursor-pointer">
+                            <input type="radio" name="category" value="products" required class="peer sr-only">
+                            <div class="border-2 border-gray-200 rounded-xl p-6 text-center hover:border-primary transition peer-checked:border-primary peer-checked:bg-primary/5">
+                                <i class="fa-solid fa-cube text-4xl text-gray-400 peer-checked:text-primary mb-3"></i>
+                                <p class="font-bold text-slate-900">Product</p>
+                                <p class="text-xs text-gray-500 mt-1">Physical items</p>
+                            </div>
+                        </label>
+                        <label class="relative cursor-pointer">
+                            <input type="radio" name="category" value="services" required class="peer sr-only">
+                            <div class="border-2 border-gray-200 rounded-xl p-6 text-center hover:border-primary transition peer-checked:border-primary peer-checked:bg-primary/5">
+                                <i class="fa-solid fa-bell-concierge text-4xl text-gray-400 mb-3"></i>
+                                <p class="font-bold text-slate-900">Service</p>
+                                <p class="text-xs text-gray-500 mt-1">Skills & expertise</p>
+                            </div>
+                        </label>
+                        <label class="relative cursor-pointer">
+                            <input type="radio" name="category" value="spaces" required class="peer sr-only">
+                            <div class="border-2 border-gray-200 rounded-xl p-6 text-center hover:border-primary transition peer-checked:border-primary peer-checked:bg-primary/5">
+                                <i class="fa-solid fa-house text-4xl text-gray-400 mb-3"></i>
+                                <p class="font-bold text-slate-900">Space</p>
+                                <p class="text-xs text-gray-500 mt-1">Places & venues</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <hr class="border-gray-200">
+
+                <!-- Item Name -->
+                <div>
+                    <label class="block text-sm font-bold text-slate-900 mb-2">
+                        Item/Service Name <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="listing-title" required placeholder="e.g. Canon EOS R5 Camera" 
+                        class="w-full border-2 border-gray-200 rounded-xl p-4 text-base focus:ring-2 focus:ring-primary focus:border-primary outline-none transition">
+                    <p class="text-xs text-gray-500 mt-1">Choose a clear, descriptive title</p>
+                </div>
+
+                <!-- Price & Unit -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-900 mb-2">
+                            Price (₹) <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold">₹</span>
+                            <input type="number" id="listing-price" required placeholder="500" min="1" 
+                                class="w-full border-2 border-gray-200 rounded-xl p-4 pl-10 text-base outline-none focus:ring-2 focus:ring-primary focus:border-primary transition">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-900 mb-2">
+                            Price Unit <span class="text-red-500">*</span>
+                        </label>
+                        <select id="listing-unit" required 
+                            class="w-full border-2 border-gray-200 rounded-xl p-4 text-base outline-none focus:ring-2 focus:ring-primary focus:border-primary cursor-pointer">
+                            <option value="/day">Per Day</option>
+                            <option value="/hour">Per Hour</option>
+                            <option value="/month">Per Month</option>
+                            <option value="/week">Per Week</option>
+                            <option value="/project">Per Project</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Location -->
+                <div>
+                    <label class="block text-sm font-bold text-slate-900 mb-2">
+                        Pincode <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="listing-pincode" required placeholder="400001" pattern="[0-9]{6}" maxlength="6" 
+                        class="w-full border-2 border-gray-200 rounded-xl p-4 text-base outline-none focus:ring-2 focus:ring-primary focus:border-primary transition">
+                    <p class="text-xs text-gray-500 mt-1">Enter your 6-digit pincode</p>
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <label class="block text-sm font-bold text-slate-900 mb-2">
+                        Description <span class="text-red-500">*</span>
+                    </label>
+                    <textarea id="listing-description" required rows="5" placeholder="Describe your item in detail... Include condition, features, and any important information."
+                        class="w-full border-2 border-gray-200 rounded-xl p-4 text-base outline-none focus:ring-2 focus:ring-primary focus:border-primary resize-none transition"></textarea>
+                    <p class="text-xs text-gray-500 mt-1">Minimum 50 characters</p>
+                </div>
+
+                <!-- Image Upload -->
+                <div>
+                    <label class="block text-sm font-bold text-slate-900 mb-2">
+                        Upload Images <span class="text-red-500">*</span>
+                    </label>
+                    
+                    <!-- Upload Area -->
+                    <div id="upload-area" class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-primary transition cursor-pointer bg-gray-50">
+                        <input type="file" id="image-input" accept="image/*" multiple class="hidden" onchange="handleImageUpload(event)">
+                        <div id="upload-prompt">
+                            <i class="fa-solid fa-cloud-arrow-up text-5xl text-gray-400 mb-4"></i>
+                            <p class="font-bold text-slate-900 mb-1">Click to upload or drag and drop</p>
+                            <p class="text-xs text-gray-500">PNG, JPG, WEBP up to 5MB</p>
+                        </div>
+                    </div>
+
+                    <!-- Image Preview Grid -->
+                    <div id="image-preview-grid" class="hidden grid grid-cols-4 gap-3 mt-4">
+                        <!-- Previews will be added here -->
+                    </div>
+
+                    <!-- Hidden input to store image URL -->
+                    <input type="hidden" id="listing-image" required>
+
+                    <div class="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-start gap-2">
+                        <i class="fa-solid fa-info-circle text-blue-500 mt-0.5"></i>
+                        <div class="text-xs text-blue-700">
+                            <p class="font-bold mb-1">Pro tip: Use high-quality images</p>
+                            <p>Upload clear, well-lit photos from multiple angles. First image will be the cover photo.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="border-gray-200">
+
+                <!-- Terms & Conditions -->
+                <div class="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-5">
+                    <label class="flex items-start gap-3 cursor-pointer">
+                        <input type="checkbox" required class="w-5 h-5 mt-1 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer">
+                        <div class="text-sm text-gray-700">
+                            <p class="font-bold text-slate-900 mb-1">I confirm that:</p>
+                            <ul class="space-y-1 text-xs">
+                                <li>✓ I own this item/service and have the right to rent it</li>
+                                <li>✓ All information provided is accurate and truthful</li>
+                                <li>✓ I understand my listing will be reviewed before going live</li>
+                                <li>✓ I agree to Rentit's <a href="#" class="text-primary underline">Terms of Service</a></li>
+                            </ul>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" 
+                    class="w-full bg-gradient-to-r from-primary to-purple-600 hover:from-primaryDark hover:to-purple-700 text-white font-bold py-5 rounded-xl transition shadow-xl transform hover:scale-[1.02] flex items-center justify-center gap-3 text-lg">
+                    <i class="fa-solid fa-rocket"></i>
+                    Submit for Review
+                </button>
+            </form>
+        </div>
+
+        <!-- Info Cards -->
+        <div class="grid grid-cols-3 gap-4 mb-8">
+            <div class="bg-white rounded-xl p-5 text-center shadow-sm">
+                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <i class="fa-solid fa-shield-check text-green-600 text-xl"></i>
+                </div>
+                <p class="font-bold text-slate-900 text-sm">Verified Listings</p>
+                <p class="text-xs text-gray-500 mt-1">We review all listings</p>
+            </div>
+            <div class="bg-white rounded-xl p-5 text-center shadow-sm">
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <i class="fa-solid fa-bolt text-blue-600 text-xl"></i>
+                </div>
+                <p class="font-bold text-slate-900 text-sm">Quick Approval</p>
+                <p class="text-xs text-gray-500 mt-1">Live within 24 hours</p>
+            </div>
+            <div class="bg-white rounded-xl p-5 text-center shadow-sm">
+                <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <i class="fa-solid fa-indian-rupee-sign text-purple-600 text-xl"></i>
+                </div>
+                <p class="font-bold text-slate-900 text-sm">Zero Commission</p>
+                <p class="text-xs text-gray-500 mt-1">Keep 100% earnings</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white px-6 py-3 rounded-lg shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center gap-3 font-medium">
+        <i class="fa-solid fa-circle-check text-green-400"></i>
+        <span id="toast-msg">Success</span>
+    </div>
+
+    <!-- Firebase Auth -->
+    <script src="/static/js/firebase-auth.js"></script>
+
+    <script>
+        // Image upload handling
+        let uploadedImages = [];
+
+        // Make upload area clickable
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadArea = document.getElementById('upload-area');
+            const imageInput = document.getElementById('image-input');
+            
+            uploadArea.addEventListener('click', () => {
+                imageInput.click();
+            });
+
+            // Drag and drop
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('border-primary', 'bg-primary/5');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('border-primary', 'bg-primary/5');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('border-primary', 'bg-primary/5');
+                const files = e.dataTransfer.files;
+                handleImageUpload({ target: { files } });
+            });
+        });
+
+        function handleImageUpload(event) {
+            const files = Array.from(event.target.files);
+            const previewGrid = document.getElementById('image-preview-grid');
+            const uploadPrompt = document.getElementById('upload-prompt');
+            
+            if (files.length === 0) return;
+
+            // Hide upload prompt, show preview grid
+            uploadPrompt.classList.add('hidden');
+            previewGrid.classList.remove('hidden');
+
+            files.forEach((file, index) => {
+                // Validate file
+                if (!file.type.startsWith('image/')) {
+                    showToast('Please upload only image files');
+                    return;
+                }
+
+                if (file.size > 5 * 1024 * 1024) {
+                    showToast('Image size should be less than 5MB');
+                    return;
+                }
+
+                // Create preview
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const imageUrl = e.target.result;
+                    uploadedImages.push(imageUrl);
+
+                    // Update hidden input with first image
+                    if (uploadedImages.length === 1) {
+                        document.getElementById('listing-image').value = imageUrl;
+                    }
+
+                    // Create preview element
+                    const previewDiv = document.createElement('div');
+                    previewDiv.className = 'relative group';
+                    previewDiv.innerHTML = `
+                        <img src="${imageUrl}" class="w-full h-24 object-cover rounded-lg border-2 border-gray-200">
+                        <button type="button" onclick="removeImage(${uploadedImages.length - 1})" 
+                            class="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                            <i class="fa-solid fa-xmark text-xs"></i>
+                        </button>
+                        ${uploadedImages.length === 1 ? '<span class="absolute bottom-1 left-1 bg-primary text-white text-[10px] px-2 py-0.5 rounded font-bold">Cover</span>' : ''}
+                    `;
+                    previewGrid.appendChild(previewDiv);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function removeImage(index) {
+            uploadedImages.splice(index, 1);
+            
+            // Rebuild preview grid
+            const previewGrid = document.getElementById('image-preview-grid');
+            const uploadPrompt = document.getElementById('upload-prompt');
+            
+            if (uploadedImages.length === 0) {
+                previewGrid.classList.add('hidden');
+                uploadPrompt.classList.remove('hidden');
+                document.getElementById('listing-image').value = '';
+            } else {
+                previewGrid.innerHTML = '';
+                uploadedImages.forEach((imageUrl, idx) => {
+                    const previewDiv = document.createElement('div');
+                    previewDiv.className = 'relative group';
+                    previewDiv.innerHTML = `
+                        <img src="${imageUrl}" class="w-full h-24 object-cover rounded-lg border-2 border-gray-200">
+                        <button type="button" onclick="removeImage(${idx})" 
+                            class="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                            <i class="fa-solid fa-xmark text-xs"></i>
+                        </button>
+                        ${idx === 0 ? '<span class="absolute bottom-1 left-1 bg-primary text-white text-[10px] px-2 py-0.5 rounded font-bold">Cover</span>' : ''}
+                    `;
+                    previewGrid.appendChild(previewDiv);
+                });
+                
+                // Update hidden input
+                document.getElementById('listing-image').value = uploadedImages[0];
+            }
+        }
+
+        // Toast notification
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            t.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 3000);
+        }
+
+        // Get current user
+        function getCurrentUser() {
+            if (typeof currentUser !== 'undefined' && currentUser) {
+                return currentUser;
+            }
+            const storedUser = JSON.parse(localStorage.getItem('rentit_user') || 'null');
+            if (storedUser && storedUser.loggedIn) {
+                return storedUser;
+            }
+            return null;
+        }
+
+        // Check authentication on page load
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                const user = getCurrentUser();
+                if (!user) {
+                    showToast('Please login to list an item');
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 2000);
+                }
+            }, 200);
+        });
+
+        // Submit listing
+        async function submitListing(event) {
+            event.preventDefault();
+            
+            const user = getCurrentUser();
+            if (!user) {
+                showToast('Please login to continue');
+                setTimeout(() => window.location.href = '/', 2000);
+                return;
+            }
+
+            // Validate image upload
+            if (uploadedImages.length === 0) {
+                showToast('Please upload at least one image');
+                return;
+            }
+
+            // Get selected category
+            const category = document.querySelector('input[name="category"]:checked').value;
+            
+            const formData = {
+                title: document.getElementById('listing-title').value,
+                category: category,
+                price: '₹' + document.getElementById('listing-price').value,
+                unit: document.getElementById('listing-unit').value,
+                pincode: document.getElementById('listing-pincode').value,
+                description: document.getElementById('listing-description').value,
+                img: uploadedImages[0], // Use first uploaded image as cover
+                images: uploadedImages, // Store all images
+                rating: '0.0',
+                tag: null,
+                status: 'pending',
+                hostId: user.uid || user.email,
+                hostName: user.name,
+                hostEmail: user.email,
+                hostVerified: user.emailVerified || false,
+                createdAt: new Date().toISOString(),
+                totalRentals: 0
+            };
+
+            // Show loading
+            const btn = event.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading images & submitting...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('/api/add-listing', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showToast('✅ Listing submitted successfully!');
+                    
+                    // Show success modal
+                    setTimeout(() => {
+                        if(confirm('🎉 Your listing has been submitted!\n\n' +
+                              '⏳ Status: Pending Review\n' +
+                              '✅ You\'ll be notified once it\'s approved\n' +
+                              '📱 Check "My Listings" to track status\n\n' +
+                              'Click OK to go back home')) {
+                            window.location.href = '/';
+                        }
+                    }, 500);
+                } else {
+                    showToast('Error: ' + result.error);
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                console.error('Error submitting listing:', error);
+                showToast('Error creating listing');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

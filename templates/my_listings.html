@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Listings - Rentit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4f46e5',
+                        primaryDark: '#4338ca',
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .listing-card {
+            transition: all 0.2s ease;
+        }
+        .listing-card:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50">
+    
+    <!-- Navbar -->
+    <nav class="bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="/" class="flex items-center gap-2.5 group">
+                    <div class="relative flex items-center justify-center w-10 h-10 bg-slate-900 rounded-xl">
+                        <i class="fa-solid fa-cube text-white text-lg"></i>
+                    </div>
+                    <span class="text-2xl font-bold text-slate-900">Rentit</span>
+                </a>
+                <div class="flex items-center gap-3">
+                    <a href="/list-item" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold rounded-lg transition">
+                        <i class="fa-solid fa-plus mr-1.5"></i> New Listing
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-10">
+        
+        <!-- Page Header -->
+        <div class="mb-10">
+            <h1 class="text-4xl font-bold text-slate-900 mb-3">My Listings</h1>
+            <p class="text-lg text-gray-500">Manage and track your rental items</p>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+            <div class="bg-white rounded-2xl p-6 border border-gray-200 hover:border-gray-300 transition">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+                        <i class="fa-solid fa-layer-group text-slate-700 text-xl"></i>
+                    </div>
+                </div>
+                <div class="text-3xl font-bold text-slate-900 mb-1" id="stat-total">0</div>
+                <div class="text-sm text-gray-500 font-medium">Total Listings</div>
+            </div>
+            
+            <div class="bg-white rounded-2xl p-6 border border-gray-200 hover:border-gray-300 transition">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
+                        <i class="fa-solid fa-circle-check text-emerald-600 text-xl"></i>
+                    </div>
+                </div>
+                <div class="text-3xl font-bold text-slate-900 mb-1" id="stat-verified">0</div>
+                <div class="text-sm text-gray-500 font-medium">Active Listings</div>
+            </div>
+            
+            <div class="bg-white rounded-2xl p-6 border border-gray-200 hover:border-gray-300 transition">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
+                        <i class="fa-solid fa-clock text-amber-600 text-xl"></i>
+                    </div>
+                </div>
+                <div class="text-3xl font-bold text-slate-900 mb-1" id="stat-pending">0</div>
+                <div class="text-sm text-gray-500 font-medium">Under Review</div>
+            </div>
+            
+            <div class="bg-white rounded-2xl p-6 border border-gray-200 hover:border-gray-300 transition">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center">
+                        <i class="fa-solid fa-chart-line text-violet-600 text-xl"></i>
+                    </div>
+                </div>
+                <div class="text-3xl font-bold text-slate-900 mb-1">₹0</div>
+                <div class="text-sm text-gray-500 font-medium">Total Earnings</div>
+            </div>
+        </div>
+
+        <!-- Filters & Actions -->
+        <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center gap-2">
+                <button onclick="filterListings('all')" id="filter-all" class="px-4 py-2 rounded-lg text-sm font-semibold bg-slate-900 text-white transition">
+                    All
+                </button>
+                <button onclick="filterListings('verified')" id="filter-verified" class="px-4 py-2 rounded-lg text-sm font-semibold text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 transition">
+                    Active
+                </button>
+                <button onclick="filterListings('pending')" id="filter-pending" class="px-4 py-2 rounded-lg text-sm font-semibold text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 transition">
+                    Pending
+                </button>
+                <button onclick="filterListings('rejected')" id="filter-rejected" class="px-4 py-2 rounded-lg text-sm font-semibold text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 transition">
+                    Rejected
+                </button>
+            </div>
+        </div>
+
+        <!-- Listings Container -->
+        <div id="listings-container">
+            <!-- Loading State -->
+            <div id="loading" class="flex flex-col items-center justify-center py-20">
+                <div class="w-12 h-12 border-4 border-gray-200 border-t-slate-900 rounded-full animate-spin mb-4"></div>
+                <p class="text-gray-400 font-medium">Loading your listings...</p>
+            </div>
+
+            <!-- Empty State -->
+            <div id="empty-state" class="hidden">
+                <div class="bg-white rounded-2xl border-2 border-dashed border-gray-200 p-16 text-center">
+                    <div class="max-w-md mx-auto">
+                        <div class="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                            <i class="fa-solid fa-inbox text-4xl text-gray-400"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-slate-900 mb-3">No listings yet</h3>
+                        <p class="text-gray-500 mb-8 text-lg">Create your first listing and start earning today</p>
+                        <a href="/list-item" class="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold px-6 py-3 rounded-xl transition shadow-lg shadow-slate-900/10">
+                            <i class="fa-solid fa-plus"></i>
+                            Create Listing
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Listings Grid -->
+            <div id="listings-grid" class="grid grid-cols-1 gap-4">
+                <!-- Listings will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 transform transition-all">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <i class="fa-solid fa-trash-can text-red-600 text-2xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-slate-900 mb-3">Delete this listing?</h3>
+                <p class="text-gray-500 mb-8">This action cannot be undone. The listing will be permanently removed.</p>
+                <div class="flex gap-3">
+                    <button onclick="closeDeleteModal()" class="flex-1 px-6 py-3 border-2 border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition">
+                        Cancel
+                    </button>
+                    <button onclick="confirmDelete()" class="flex-1 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl transition shadow-lg shadow-red-600/20">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-slate-900 text-white px-6 py-4 rounded-xl shadow-2xl transform translate-y-32 opacity-0 transition-all duration-300 z-50 flex items-center gap-3 font-medium">
+        <i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+        <span id="toast-msg">Success</span>
+    </div>
+
+    <!-- Firebase Auth -->
+    <script src="/static/js/firebase-auth.js"></script>
+
+    <script>
+        let allListings = [];
+        let currentFilter = 'all';
+        let deleteItemId = null;
+
+        // Get current user
+        function getCurrentUser() {
+            if (typeof currentUser !== 'undefined' && currentUser) {
+                return currentUser;
+            }
+            const storedUser = JSON.parse(localStorage.getItem('rentit_user') || 'null');
+            if (storedUser && storedUser.loggedIn) {
+                return storedUser;
+            }
+            return null;
+        }
+
+        // Check authentication on page load
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                const user = getCurrentUser();
+                if (!user) {
+                    showToast('Please login to view your listings');
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 2000);
+                } else {
+                    fetchMyListings();
+                }
+            }, 200);
+        });
+
+        // Fetch user's listings
+        async function fetchMyListings() {
+            const user = getCurrentUser();
+            if (!user) return;
+
+            try {
+                // Fetch from all categories
+                const categories = ['products', 'services', 'spaces'];
+                allListings = [];
+
+                for (const category of categories) {
+                    const response = await fetch(`/api/listings?category=${category}&show_all=true`);
+                    const data = await response.json();
+                    
+                    // Filter by current user's hostId
+                    const userListings = data.filter(item => 
+                        item.hostId === (user.uid || user.email)
+                    );
+                    
+                    // Add category info
+                    userListings.forEach(item => {
+                        item.category = category;
+                    });
+                    
+                    allListings = allListings.concat(userListings);
+                }
+
+                updateStats();
+                renderListings();
+                
+            } catch (error) {
+                console.error('Error fetching listings:', error);
+                showToast('Error loading listings');
+            }
+        }
+
+        // Update stats
+        function updateStats() {
+            const total = allListings.length;
+            const verified = allListings.filter(item => item.status === 'verified').length;
+            const pending = allListings.filter(item => item.status === 'pending').length;
+
+            document.getElementById('stat-total').textContent = total;
+            document.getElementById('stat-verified').textContent = verified;
+            document.getElementById('stat-pending').textContent = pending;
+        }
+
+        // Filter listings
+        function filterListings(filter) {
+            currentFilter = filter;
+            
+            // Update button styles
+            document.querySelectorAll('[id^="filter-"]').forEach(btn => {
+                btn.className = 'px-4 py-2 rounded-lg text-sm font-semibold text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 transition';
+            });
+            document.getElementById(`filter-${filter}`).className = 'px-4 py-2 rounded-lg text-sm font-semibold bg-slate-900 text-white transition';
+            
+            renderListings();
+        }
+
+        // Render listings
+        function renderListings() {
+            const grid = document.getElementById('listings-grid');
+            const loading = document.getElementById('loading');
+            const emptyState = document.getElementById('empty-state');
+            
+            loading.classList.add('hidden');
+            
+            // Filter listings
+            let filtered = allListings;
+            if (currentFilter !== 'all') {
+                filtered = allListings.filter(item => item.status === currentFilter);
+            }
+
+            if (filtered.length === 0) {
+                emptyState.classList.remove('hidden');
+                grid.innerHTML = '';
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            grid.innerHTML = '';
+
+            // Render each listing
+            filtered.forEach(item => {
+                const card = createListingCard(item);
+                grid.appendChild(card);
+            });
+        }
+
+        // Create listing card - Modern Design
+        function createListingCard(item) {
+            const card = document.createElement('div');
+            card.className = 'listing-card bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-xl hover:border-gray-300 transition-all';
+            
+            const statusConfig = {
+                verified: { 
+                    badge: '<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>Active</span>',
+                    color: 'emerald'
+                },
+                pending: { 
+                    badge: '<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200"><span class="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse"></span>Under Review</span>',
+                    color: 'amber'
+                },
+                rejected: { 
+                    badge: '<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-red-50 text-red-700 border border-red-200"><span class="w-1.5 h-1.5 bg-red-500 rounded-full"></span>Rejected</span>',
+                    color: 'red'
+                }
+            };
+
+            const status = statusConfig[item.status] || statusConfig.pending;
+
+            card.innerHTML = `
+                <div class="flex">
+                    <!-- Image -->
+                    <div class="w-64 h-48 bg-gray-100 flex-shrink-0 relative group">
+                        <img src="${item.img}" class="w-full h-full object-cover" alt="${item.title}">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition"></div>
+                    </div>
+                    
+                    <!-- Content -->
+                    <div class="flex-1 p-6 flex flex-col">
+                        <!-- Header -->
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex-1 pr-4">
+                                <h3 class="text-xl font-bold text-slate-900 mb-2 hover:text-primary transition cursor-pointer" onclick="viewListing('${item.title}')">${item.title}</h3>
+                                <div class="flex items-center gap-3 text-sm text-gray-500">
+                                    <span class="inline-flex items-center gap-1.5">
+                                        <i class="fa-solid fa-tag text-xs"></i>
+                                        <span class="capitalize">${item.category}</span>
+                                    </span>
+                                    <span class="text-gray-300">•</span>
+                                    <span class="inline-flex items-center gap-1.5">
+                                        <i class="fa-solid fa-location-dot text-xs"></i>
+                                        <span>${item.pincode}</span>
+                                    </span>
+                                    <span class="text-gray-300">•</span>
+                                    <span>${new Date(item.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                                </div>
+                            </div>
+                            ${status.badge}
+                        </div>
+                        
+                        <!-- Description -->
+                        <p class="text-gray-600 mb-6 line-clamp-2 flex-1">${item.description || 'No description provided'}</p>
+                        
+                        <!-- Footer -->
+                        <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                            <div class="flex items-baseline gap-2">
+                                <span class="text-3xl font-bold text-slate-900">${item.price}</span>
+                                <span class="text-gray-500 font-medium">${item.unit}</span>
+                            </div>
+                            
+                            <div class="flex items-center gap-2">
+                                ${item.status === 'verified' ? `
+                                    <button onclick="viewListing('${item.title}')" class="px-4 py-2.5 text-gray-700 font-semibold rounded-lg hover:bg-gray-100 transition text-sm">
+                                        <i class="fa-solid fa-arrow-up-right-from-square mr-1.5"></i>View
+                                    </button>
+                                ` : ''}
+                                <button onclick="editListing('${item.title}')" class="px-4 py-2.5 text-gray-700 font-semibold rounded-lg hover:bg-gray-100 transition text-sm">
+                                    <i class="fa-solid fa-pen mr-1.5"></i>Edit
+                                </button>
+                                <button onclick="openDeleteModal('${item.title}')" class="px-4 py-2.5 text-red-600 font-semibold rounded-lg hover:bg-red-50 transition text-sm">
+                                    <i class="fa-solid fa-trash-can mr-1.5"></i>Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // View listing
+        function viewListing(title) {
+            window.location.href = '/?view=' + encodeURIComponent(title);
+        }
+
+        // Edit listing
+        function editListing(title) {
+            showToast('Edit feature coming soon!');
+            // TODO: Implement edit functionality
+        }
+
+        // Delete modal
+        function openDeleteModal(title) {
+            deleteItemId = title;
+            document.getElementById('delete-modal').classList.remove('hidden');
+        }
+
+        function closeDeleteModal() {
+            deleteItemId = null;
+            document.getElementById('delete-modal').classList.add('hidden');
+        }
+
+        function confirmDelete() {
+            if (!deleteItemId) return;
+            
+            // TODO: Implement actual delete API call
+            showToast('Delete feature coming soon!');
+            closeDeleteModal();
+        }
+
+        // Toast notification
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            t.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 3000);
+        }
+    </script>
+</body>
+</html>
