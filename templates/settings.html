@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Rentit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { primary: '#4f46e5', primaryDark: '#4338ca' },
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-sans bg-gray-50">
+    
+    <!-- Navbar -->
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="/" class="flex items-center gap-2.5">
+                    <div class="relative flex items-center justify-center w-10 h-10 bg-slate-900 rounded-xl shadow-lg">
+                        <i class="fa-solid fa-cube text-white text-lg"></i>
+                        <div class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-primary rounded-full border-2 border-white"></div>
+                    </div>
+                    <span class="text-2xl font-bold text-slate-900">Rentit</span>
+                </a>
+                <a href="/" class="text-gray-600 hover:text-slate-900 font-medium">
+                    <i class="fa-solid fa-arrow-left mr-2"></i> Back to Home
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-4xl mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-slate-900 mb-8">Settings</h1>
+
+        <!-- Account Settings -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+            <h3 class="text-xl font-bold text-slate-900 mb-4">Account Settings</h3>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between py-3 border-b border-gray-100">
+                    <div>
+                        <p class="font-semibold text-slate-900">Email Address</p>
+                        <p class="text-sm text-gray-600" id="settings-email">Loading...</p>
+                    </div>
+                    <button class="text-primary hover:underline text-sm font-semibold">Change</button>
+                </div>
+                <div class="flex items-center justify-between py-3 border-b border-gray-100">
+                    <div>
+                        <p class="font-semibold text-slate-900">Password</p>
+                        <p class="text-sm text-gray-600">••••••••</p>
+                    </div>
+                    <button class="text-primary hover:underline text-sm font-semibold">Change</button>
+                </div>
+                <div class="flex items-center justify-between py-3">
+                    <div>
+                        <p class="font-semibold text-slate-900">Phone Number</p>
+                        <p class="text-sm text-gray-600">Not added</p>
+                    </div>
+                    <button class="text-primary hover:underline text-sm font-semibold">Add</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification Settings -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+            <h3 class="text-xl font-bold text-slate-900 mb-4">Notifications</h3>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between py-3">
+                    <div>
+                        <p class="font-semibold text-slate-900">Email Notifications</p>
+                        <p class="text-sm text-gray-600">Receive booking updates via email</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" checked class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                    </label>
+                </div>
+                <div class="flex items-center justify-between py-3">
+                    <div>
+                        <p class="font-semibold text-slate-900">SMS Notifications</p>
+                        <p class="text-sm text-gray-600">Receive booking updates via SMS</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                    </label>
+                </div>
+                <div class="flex items-center justify-between py-3">
+                    <div>
+                        <p class="font-semibold text-slate-900">Marketing Emails</p>
+                        <p class="text-sm text-gray-600">Receive promotional offers and updates</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" checked class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Privacy Settings -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+            <h3 class="text-xl font-bold text-slate-900 mb-4">Privacy</h3>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between py-3">
+                    <div>
+                        <p class="font-semibold text-slate-900">Profile Visibility</p>
+                        <p class="text-sm text-gray-600">Make your profile visible to others</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" checked class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                    </label>
+                </div>
+                <div class="flex items-center justify-between py-3">
+                    <div>
+                        <p class="font-semibold text-slate-900">Show Contact Info</p>
+                        <p class="text-sm text-gray-600">Display your contact information</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="bg-white rounded-xl shadow-sm border border-red-200 p-6">
+            <h3 class="text-xl font-bold text-red-600 mb-4">Danger Zone</h3>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between py-3">
+                    <div>
+                        <p class="font-semibold text-slate-900">Delete Account</p>
+                        <p class="text-sm text-gray-600">Permanently delete your account and all data</p>
+                    </div>
+                    <button onclick="deleteAccount()" class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 transition">
+                        Delete Account
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/firebase-auth.js"></script>
+    <script>
+        window.addEventListener('load', function() {
+            const user = JSON.parse(localStorage.getItem('rentit_user') || 'null');
+            if (!user || !user.loggedIn) {
+                window.location.href = '/';
+                return;
+            }
+
+            document.getElementById('settings-email').innerText = user.email || '';
+        });
+
+        function deleteAccount() {
+            if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+                if (confirm('This will permanently delete all your data. Are you absolutely sure?')) {
+                    localStorage.clear();
+                    alert('Account deleted successfully');
+                    window.location.href = '/';
+                }
+            }
+        }
+    </script>
+</body>
+</html>

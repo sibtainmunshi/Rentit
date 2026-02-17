@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Policies - RentIt</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-sans bg-gray-50">
+    <!-- Navbar -->
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="/" class="flex items-center gap-2.5">
+                    <div class="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center">
+                        <i class="fa-solid fa-cube text-white text-lg"></i>
+                    </div>
+                    <span class="text-2xl font-bold text-slate-900">Rentit</span>
+                </a>
+                <a href="/" class="text-sm font-bold text-gray-600 hover:text-slate-900 transition">
+                    <i class="fa-solid fa-arrow-left mr-2"></i>Back to Home
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Page Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-slate-900 mb-4">Our Policies</h1>
+            <p class="text-lg text-gray-600">Everything you need to know about using RentIt</p>
+        </div>
+
+        <!-- Quick Navigation -->
+        <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+            <h3 class="font-bold text-lg mb-4 text-slate-900">Quick Navigation</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <a href="#terms" class="flex items-center gap-3 p-4 bg-blue-50 rounded-xl hover:bg-blue-100 transition">
+                    <i class="fa-solid fa-file-contract text-2xl text-blue-600"></i>
+                    <span class="font-bold text-slate-900">Terms of Service</span>
+                </a>
+                <a href="#cancellation" class="flex items-center gap-3 p-4 bg-green-50 rounded-xl hover:bg-green-100 transition">
+                    <i class="fa-solid fa-rotate-left text-2xl text-green-600"></i>
+                    <span class="font-bold text-slate-900">Cancellation Policy</span>
+                </a>
+                <a href="#privacy" class="flex items-center gap-3 p-4 bg-purple-50 rounded-xl hover:bg-purple-100 transition">
+                    <i class="fa-solid fa-shield-halved text-2xl text-purple-600"></i>
+                    <span class="font-bold text-slate-900">Privacy Policy</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Terms of Service -->
+        <div id="terms" class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+            <div class="flex items-center gap-3 mb-6">
+                <i class="fa-solid fa-file-contract text-3xl text-blue-600"></i>
+                <h2 class="text-3xl font-bold text-slate-900">Terms of Service</h2>
+            </div>
+            
+            <div class="space-y-6 text-gray-700">
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">1. Acceptance of Terms</h3>
+                    <p>By accessing and using RentIt, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to these terms, please do not use our service.</p>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">2. User Responsibilities</h3>
+                    <ul class="list-disc list-inside space-y-2 ml-4">
+                        <li>You must be at least 18 years old to use RentIt</li>
+                        <li>You are responsible for maintaining the confidentiality of your account</li>
+                        <li>You agree to provide accurate and complete information</li>
+                        <li>You will not use the service for any illegal or unauthorized purpose</li>
+                        <li>You are responsible for all activities under your account</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">3. Rental Agreement</h3>
+                    <ul class="list-disc list-inside space-y-2 ml-4">
+                        <li>All rentals are subject to availability and owner approval</li>
+                        <li>Rental prices are clearly displayed and include applicable taxes</li>
+                        <li>You agree to return items in the same condition as received</li>
+                        <li>Late returns may incur additional charges</li>
+                        <li>Damage or loss of items will be charged to your account</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">4. Security Deposit</h3>
+                    <p>A security deposit is required for all rentals. The deposit will be:</p>
+                    <ul class="list-disc list-inside space-y-2 ml-4 mt-2">
+                        <li>Held during the rental period</li>
+                        <li>Refunded within 3-5 business days after item return</li>
+                        <li>Used to cover damages or cleaning fees if necessary</li>
+                        <li>Partially or fully forfeited in case of item loss or severe damage</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">5. Payment Terms</h3>
+                    <ul class="list-disc list-inside space-y-2 ml-4">
+                        <li>All payments must be made through RentIt's secure payment system</li>
+                        <li>Service fees are non-refundable</li>
+                        <li>Prices are subject to change without notice</li>
+                        <li>You authorize RentIt to charge your payment method for all fees</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">6. Prohibited Activities</h3>
+                    <ul class="list-disc list-inside space-y-2 ml-4">
+                        <li>Subletting or re-renting items without permission</li>
+                        <li>Using items for commercial purposes unless specified</li>
+                        <li>Modifying or altering rented items</li>
+                        <li>Providing false information or impersonating others</li>
+                        <li>Harassing or threatening other users</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">7. Limitation of Liability</h3>
+                    <p>RentIt acts as a platform connecting renters and owners. We are not responsible for:</p>
+                    <ul class="list-disc list-inside space-y-2 ml-4 mt-2">
+                        <li>Quality, safety, or legality of items listed</li>
+                        <li>Accuracy of listings or user information</li>
+                        <li>Disputes between renters and owners</li>
+                        <li>Any injuries or damages resulting from item use</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cancellation Policy -->
+        <div id="cancellation" class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+            <div class="flex items-center gap-3 mb-6">
+                <i class="fa-solid fa-rotate-left text-3xl text-green-600"></i>
+                <h2 class="text-3xl font-bold text-slate-900">Cancellation Policy</h2>
+            </div>
+            
+            <div class="space-y-6 text-gray-700">
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Cancellation by Renter</h3>
+                    
+                    <div class="bg-green-50 border-l-4 border-green-500 p-4 mb-4">
+                        <p class="font-bold text-green-800">Free Cancellation</p>
+                        <p class="text-green-700">Cancel up to 24 hours before rental start time for a full refund</p>
+                    </div>
+
+                    <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 mb-4">
+                        <p class="font-bold text-yellow-800">50% Refund</p>
+                        <p class="text-yellow-700">Cancel 12-24 hours before rental start time</p>
+                    </div>
+
+                    <div class="bg-red-50 border-l-4 border-red-500 p-4">
+                        <p class="font-bold text-red-800">No Refund</p>
+                        <p class="text-red-700">Cancel less than 12 hours before rental start time</p>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Refund Processing</h3>
+                    <ul class="list-disc list-inside space-y-2 ml-4">
+                        <li>Refunds are processed within 5-7 business days</li>
+                        <li>Service fees are non-refundable in all cases</li>
+                        <li>Security deposits are always fully refunded</li>
+                        <li>Refunds are issued to the original payment method</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Cancellation by Owner</h3>
+                    <p>If an owner cancels your confirmed booking:</p>
+                    <ul class="list-disc list-inside space-y-2 ml-4 mt-2">
+                        <li>You will receive a full refund including service fees</li>
+                        <li>We will help you find alternative items</li>
+                        <li>The owner may face penalties for cancellation</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Modification Policy</h3>
+                    <ul class="list-disc list-inside space-y-2 ml-4">
+                        <li>You can modify dates up to 48 hours before rental start</li>
+                        <li>Modifications are subject to item availability</li>
+                        <li>Price differences will be charged or refunded accordingly</li>
+                        <li>Contact customer support for modification requests</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Emergency Cancellations</h3>
+                    <p>In case of emergencies (medical, natural disasters, etc.), contact our support team. We review each case individually and may provide exceptions to our standard policy.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Privacy Policy -->
+        <div id="privacy" class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+            <div class="flex items-center gap-3 mb-6">
+                <i class="fa-solid fa-shield-halved text-3xl text-purple-600"></i>
+                <h2 class="text-3xl font-bold text-slate-900">Privacy Policy</h2>
+            </div>
+            
+            <div class="space-y-6 text-gray-700">
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Information We Collect</h3>
+                    <ul class="list-disc list-inside space-y-2 ml-4">
+                        <li><strong>Personal Information:</strong> Name, email, phone number, address</li>
+                        <li><strong>Payment Information:</strong> Credit card details, billing address</li>
+                        <li><strong>Profile Information:</strong> Profile picture, preferences, rental history</li>
+                        <li><strong>Usage Data:</strong> IP address, browser type, pages visited</li>
+                        <li><strong>Communication:</strong> Messages between users, support tickets</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">How We Use Your Information</h3>
+                    <ul class="list-disc list-inside space-y-2 ml-4">
+                        <li>To provide and improve our services</li>
+                        <li>To process transactions and send notifications</li>
+                        <li>To communicate with you about your account</li>
+                        <li>To personalize your experience</li>
+                        <li>To prevent fraud and ensure platform security</li>
+                        <li>To comply with legal obligations</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Information Sharing</h3>
+                    <p>We do not sell your personal information. We may share your data with:</p>
+                    <ul class="list-disc list-inside space-y-2 ml-4 mt-2">
+                        <li><strong>Other Users:</strong> Name and profile info visible to rental partners</li>
+                        <li><strong>Service Providers:</strong> Payment processors, hosting services</li>
+                        <li><strong>Legal Requirements:</strong> When required by law or to protect rights</li>
+                        <li><strong>Business Transfers:</strong> In case of merger or acquisition</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Data Security</h3>
+                    <p>We implement industry-standard security measures:</p>
+                    <ul class="list-disc list-inside space-y-2 ml-4 mt-2">
+                        <li>SSL encryption for all data transmission</li>
+                        <li>Secure payment processing through trusted providers</li>
+                        <li>Regular security audits and updates</li>
+                        <li>Access controls and authentication</li>
+                        <li>Data backup and recovery systems</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Your Rights</h3>
+                    <ul class="list-disc list-inside space-y-2 ml-4">
+                        <li><strong>Access:</strong> Request a copy of your personal data</li>
+                        <li><strong>Correction:</strong> Update or correct your information</li>
+                        <li><strong>Deletion:</strong> Request deletion of your account and data</li>
+                        <li><strong>Opt-out:</strong> Unsubscribe from marketing communications</li>
+                        <li><strong>Data Portability:</strong> Receive your data in a portable format</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Cookies and Tracking</h3>
+                    <p>We use cookies and similar technologies to:</p>
+                    <ul class="list-disc list-inside space-y-2 ml-4 mt-2">
+                        <li>Remember your preferences and settings</li>
+                        <li>Analyze site traffic and usage patterns</li>
+                        <li>Provide personalized content and ads</li>
+                        <li>Improve platform performance</li>
+                    </ul>
+                    <p class="mt-2">You can control cookies through your browser settings.</p>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Children's Privacy</h3>
+                    <p>RentIt is not intended for users under 18 years of age. We do not knowingly collect information from children. If you believe we have collected data from a child, please contact us immediately.</p>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Changes to Privacy Policy</h3>
+                    <p>We may update this policy from time to time. We will notify you of significant changes via email or platform notification. Continued use of RentIt after changes constitutes acceptance of the updated policy.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Section -->
+        <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl shadow-lg p-8 text-white text-center">
+            <i class="fa-solid fa-headset text-5xl mb-4"></i>
+            <h3 class="text-2xl font-bold mb-3">Have Questions?</h3>
+            <p class="text-blue-100 mb-6">Our support team is here to help you 24/7</p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="mailto:support@rentit.com" class="bg-white text-blue-600 px-6 py-3 rounded-xl font-bold hover:bg-blue-50 transition">
+                    <i class="fa-solid fa-envelope mr-2"></i>Email Support
+                </a>
+                <a href="tel:+911234567890" class="bg-white text-blue-600 px-6 py-3 rounded-xl font-bold hover:bg-blue-50 transition">
+                    <i class="fa-solid fa-phone mr-2"></i>Call Us
+                </a>
+            </div>
+        </div>
+
+        <!-- Last Updated -->
+        <div class="text-center mt-8 text-gray-500 text-sm">
+            <p>Last Updated: February 18, 2026</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-white py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-gray-400">&copy; 2026 RentIt. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

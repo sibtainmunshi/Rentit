@@ -142,9 +142,9 @@
                             <label class="flex items-start gap-3 cursor-pointer">
                                 <input type="checkbox" id="terms" required class="w-5 h-5 mt-0.5 rounded border-gray-300 text-primary focus:ring-primary">
                                 <span class="text-sm text-gray-700">
-                                    I agree to the <a href="#" class="text-primary hover:underline font-bold">Terms of Service</a>, 
-                                    <a href="#" class="text-primary hover:underline font-bold">Cancellation Policy</a>, and 
-                                    <a href="#" class="text-primary hover:underline font-bold">Privacy Policy</a>
+                                    I agree to the <a href="/policies#terms" class="text-primary hover:underline font-bold">Terms of Service</a>, 
+                                    <a href="/policies#cancellation" class="text-primary hover:underline font-bold">Cancellation Policy</a>, and 
+                                    <a href="/policies#privacy" class="text-primary hover:underline font-bold">Privacy Policy</a>
                                 </span>
                             </label>
                         </div>
@@ -180,12 +180,18 @@
                         </div>
                         <div class="flex justify-between text-sm">
                             <span class="text-gray-600">Service Fee</span>
-                            <span class="font-bold text-slate-900">₹99</span>
+                            <span class="font-bold text-slate-900">₹60</span>
                         </div>
                         <div class="flex justify-between text-sm">
-                            <span class="text-gray-600">Security Deposit</span>
+                            <span class="text-gray-600 flex items-center gap-1">
+                                Security Deposit
+                                <i class="fa-solid fa-info-circle text-xs text-gray-400" title="Refundable after item return"></i>
+                            </span>
                             <span class="font-bold text-slate-900">₹500</span>
                         </div>
+                        <p class="text-xs text-green-600 -mt-1 ml-0">
+                            <i class="fa-solid fa-check-circle"></i> Refundable after item return
+                        </p>
                         <div class="border-t border-gray-200 pt-3 flex justify-between">
                             <span class="font-bold text-lg text-slate-900">Total Amount</span>
                             <span id="total-amount" class="font-bold text-2xl text-primary">₹0</span>
@@ -197,6 +203,10 @@
                         <div class="flex items-center gap-2 text-gray-600">
                             <i class="fa-solid fa-shield-halved text-green-500"></i>
                             <span>100% Secure Payment</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-gray-600">
+                            <i class="fa-solid fa-hand-holding-dollar text-emerald-500"></i>
+                            <span>Deposit refunded after return</span>
                         </div>
                         <div class="flex items-center gap-2 text-gray-600">
                             <i class="fa-solid fa-rotate-left text-blue-500"></i>
@@ -271,58 +281,187 @@
 
         // Set min date to today
         const today = new Date().toISOString().split('T')[0];
-        document.getElementById('start-date').min = today;
-        document.getElementById('end-date').min = today;
+        const startDateInput = document.getElementById('start-date');
+        const endDateInput = document.getElementById('end-date');
+        
+        startDateInput.min = today;
+        endDateInput.min = today;
+
+        // Pre-fill dates if they were selected on product detail page
+        const savedDates = JSON.parse(localStorage.getItem('booking_dates') || 'null');
+        if (savedDates && savedDates.startDate && savedDates.endDate) {
+            startDateInput.value = savedDates.startDate;
+            endDateInput.value = savedDates.endDate;
+            endDateInput.min = savedDates.startDate; // Update end date min
+            
+            // Clear saved dates after using them
+            localStorage.removeItem('booking_dates');
+            
+            // Auto-calculate total with pre-filled dates
+            setTimeout(() => calculateTotal(), 100);
+        }
+
+        // Update end date min when start date changes
+        startDateInput.addEventListener('change', function() {
+            const startDate = this.value;
+            if (startDate) {
+                // End date should be at least start date
+                endDateInput.min = startDate;
+                
+                // If end date is before start date, clear it
+                if (endDateInput.value && endDateInput.value < startDate) {
+                    endDateInput.value = '';
+                    showError('End date must be after start date');
+                }
+            }
+            calculateTotal();
+        });
+
+        endDateInput.addEventListener('change', function() {
+            const startDate = startDateInput.value;
+            const endDate = this.value;
+            
+            if (startDate && endDate && endDate < startDate) {
+                this.value = '';
+                showError('End date must be after start date');
+                return;
+            }
+            calculateTotal();
+        });
 
         // Calculate duration and total
         function calculateTotal() {
-            const startDate = document.getElementById('start-date').value;
-            const endDate = document.getElementById('end-date').value;
+            const startDate = startDateInput.value;
+            const endDate = endDateInput.value;
             
-            if (startDate && endDate) {
-                const start = new Date(startDate);
-                const end = new Date(endDate);
-                const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
-                
-                if (days > 0) {
-                    document.getElementById('duration').textContent = `${days} day${days > 1 ? 's' : ''}`;
-                    
-                    // Calculate total
-                    const basePrice = parseInt(itemData.price?.replace(/[₹,k]/g, '') || '0');
-                    const rentalTotal = basePrice * days;
-                    const serviceFee = 99;
-                    const deposit = 500;
-                    const total = rentalTotal + serviceFee + deposit;
-                    
-                    document.getElementById('rental-price').textContent = `₹${rentalTotal}`;
-                    document.getElementById('total-amount').textContent = `₹${total}`;
-                }
+            if (!startDate || !endDate) {
+                // Reset to defaults if dates not selected
+                document.getElementById('duration').textContent = '0 days';
+                document.getElementById('rental-price').textContent = itemData.price || '₹0';
+                document.getElementById('total-amount').textContent = '₹599';
+                return;
             }
+            
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            // Validate dates
+            if (start < today) {
+                showError('Start date cannot be in the past');
+                startDateInput.value = '';
+                return;
+            }
+            
+            if (end < start) {
+                showError('End date must be after start date');
+                endDateInput.value = '';
+                return;
+            }
+            
+            const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+            
+            if (days < 1) {
+                showError('Minimum rental period is 1 day');
+                return;
+            }
+            
+            // Update duration display
+            document.getElementById('duration').textContent = `${days} day${days > 1 ? 's' : ''}`;
+            
+            // Calculate total
+            const priceStr = itemData.price?.replace(/[₹,]/g, '') || '0';
+            const basePrice = parseInt(priceStr);
+            
+            if (isNaN(basePrice) || basePrice <= 0) {
+                console.error('Invalid base price:', itemData.price);
+                showError('Error calculating price');
+                return;
+            }
+            
+            const rentalTotal = basePrice * days;
+            const serviceFee = 60;
+            const deposit = 500;
+            const total = rentalTotal + serviceFee + deposit;
+            
+            document.getElementById('rental-price').textContent = `₹${rentalTotal.toLocaleString()}`;
+            document.getElementById('total-amount').textContent = `₹${total.toLocaleString()}`;
         }
 
-        document.getElementById('start-date').addEventListener('change', calculateTotal);
-        document.getElementById('end-date').addEventListener('change', calculateTotal);
+        function showError(message) {
+            // Create toast notification
+            const toast = document.createElement('div');
+            toast.className = 'fixed top-5 right-5 bg-red-500 text-white px-6 py-3 rounded-lg shadow-2xl z-50 animate-fade-in';
+            toast.innerHTML = `<i class="fa-solid fa-exclamation-circle mr-2"></i>${message}`;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
 
         // Form submission
         document.getElementById('booking-form').addEventListener('submit', function(e) {
             e.preventDefault();
             
+            const startDate = startDateInput.value;
+            const endDate = endDateInput.value;
+            
+            // Validate dates again before submission
+            if (!startDate || !endDate) {
+                showError('Please select rental dates');
+                return;
+            }
+            
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            if (start < today) {
+                showError('Start date cannot be in the past');
+                return;
+            }
+            
+            if (end < start) {
+                showError('End date must be after start date');
+                return;
+            }
+            
+            const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+            
+            if (days < 1) {
+                showError('Minimum rental period is 1 day');
+                return;
+            }
+            
+            // Calculate final amounts
+            const priceStr = itemData.price?.replace(/[₹,]/g, '') || '0';
+            const basePrice = parseInt(priceStr);
+            const rentalTotal = basePrice * days;
+            const serviceFee = 60;
+            const deposit = 500;
+            const total = rentalTotal + serviceFee + deposit;
+            
             const booking = {
-                item: itemData,
-                startDate: document.getElementById('start-date').value,
-                endDate: document.getElementById('end-date').value,
+                itemName: itemData.title,
+                itemImage: itemData.img,
+                itemPrice: itemData.price,
+                startDate: startDate,
+                endDate: endDate,
+                duration: days,
+                rentalAmount: rentalTotal,
+                serviceFee: serviceFee,
+                deposit: deposit,
+                totalAmount: `₹${total}`,
                 fullName: document.getElementById('full-name').value,
                 email: document.getElementById('email').value,
                 phone: document.getElementById('phone').value,
-                address: {
-                    line1: document.getElementById('address-line1').value,
-                    city: document.getElementById('city').value,
-                    state: document.getElementById('state').value,
-                    pincode: document.getElementById('pincode').value
-                },
+                address: `${document.getElementById('address-line1').value}, ${document.getElementById('city').value}, ${document.getElementById('state').value} - ${document.getElementById('pincode').value}`,
                 notes: document.getElementById('notes').value,
                 bookingId: 'BK' + Date.now(),
-                status: 'confirmed',
+                status: 'Confirmed',
                 createdAt: new Date().toISOString()
             };
             

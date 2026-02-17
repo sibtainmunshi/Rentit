@@ -248,16 +248,16 @@ function showUserMenu() {
             <p class="text-sm font-bold text-slate-900">${currentUser?.name || 'User'}</p>
             <p class="text-xs text-gray-500">${currentUser?.email || ''}</p>
         </div>
-        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition">
+        <a href="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition">
             <i class="fa-solid fa-user mr-2"></i> My Profile
         </a>
         <a href="/my-listings" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition">
             <i class="fa-solid fa-list mr-2"></i> My Listings
         </a>
-        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition">
+        <a href="/my-bookings" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition">
             <i class="fa-solid fa-box mr-2"></i> My Bookings
         </a>
-        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition">
+        <a href="/settings" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition">
             <i class="fa-solid fa-gear mr-2"></i> Settings
         </a>
         <div class="border-t border-gray-100 mt-2 pt-2">

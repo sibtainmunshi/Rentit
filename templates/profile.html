@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Rentit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { primary: '#4f46e5', primaryDark: '#4338ca' },
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-sans bg-gray-50">
+    
+    <!-- Navbar -->
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="/" class="flex items-center gap-2.5">
+                    <div class="relative flex items-center justify-center w-10 h-10 bg-slate-900 rounded-xl shadow-lg">
+                        <i class="fa-solid fa-cube text-white text-lg"></i>
+                        <div class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-primary rounded-full border-2 border-white"></div>
+                    </div>
+                    <span class="text-2xl font-bold text-slate-900">Rentit</span>
+                </a>
+                <a href="/" class="text-gray-600 hover:text-slate-900 font-medium">
+                    <i class="fa-solid fa-arrow-left mr-2"></i> Back to Home
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-4xl mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-slate-900 mb-8">My Profile</h1>
+
+        <!-- Profile Card -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+            <div class="flex items-center gap-6 mb-6">
+                <div class="w-24 h-24 bg-primary rounded-full flex items-center justify-center text-white text-3xl font-bold overflow-hidden" id="profile-avatar">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="flex-1">
+                    <h2 class="text-2xl font-bold text-slate-900" id="profile-name">Loading...</h2>
+                    <p class="text-gray-600" id="profile-email">Loading...</p>
+                    <div class="flex gap-2 mt-2">
+                        <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
+                            <i class="fa-solid fa-circle-check mr-1"></i> Verified
+                        </span>
+                    </div>
+                </div>
+                <button onclick="editProfile()" class="px-4 py-2 bg-primary text-white rounded-lg font-semibold hover:bg-primaryDark transition">
+                    <i class="fa-solid fa-pen mr-2"></i> Edit Profile
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm mb-1">Total Listings</p>
+                        <p class="text-3xl font-bold text-slate-900">0</p>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <i class="fa-solid fa-list text-blue-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm mb-1">Total Bookings</p>
+                        <p class="text-3xl font-bold text-slate-900" id="total-bookings">0</p>
+                    </div>
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                        <i class="fa-solid fa-box text-green-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm mb-1">Member Since</p>
+                        <p class="text-lg font-bold text-slate-900" id="member-since">2026</p>
+                    </div>
+                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <i class="fa-solid fa-calendar text-purple-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Details -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <h3 class="text-xl font-bold text-slate-900 mb-4">Profile Information</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-sm font-semibold text-gray-600">Full Name</label>
+                    <p class="text-slate-900 mt-1" id="detail-name">Loading...</p>
+                </div>
+                <div>
+                    <label class="text-sm font-semibold text-gray-600">Email Address</label>
+                    <p class="text-slate-900 mt-1" id="detail-email">Loading...</p>
+                </div>
+                <div>
+                    <label class="text-sm font-semibold text-gray-600">Phone Number</label>
+                    <p class="text-slate-900 mt-1">Not provided</p>
+                </div>
+                <div>
+                    <label class="text-sm font-semibold text-gray-600">Location</label>
+                    <p class="text-slate-900 mt-1">Ahmedabad, Gujarat</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/firebase-auth.js"></script>
+    <script>
+        // Load user profile
+        window.addEventListener('load', function() {
+            const user = JSON.parse(localStorage.getItem('rentit_user') || 'null');
+            if (!user || !user.loggedIn) {
+                window.location.href = '/';
+                return;
+            }
+
+            document.getElementById('profile-name').innerText = user.name || 'User';
+            document.getElementById('profile-email').innerText = user.email || '';
+            document.getElementById('detail-name').innerText = user.name || 'User';
+            document.getElementById('detail-email').innerText = user.email || '';
+            
+            // Set profile picture
+            const avatarDiv = document.getElementById('profile-avatar');
+            if (user.photoURL) {
+                // If Google profile picture exists, show it
+                avatarDiv.innerHTML = `<img src="${user.photoURL}" class="w-full h-full object-cover" alt="${user.name}">`;
+            } else {
+                // Fallback to initials
+                const initials = user.name ? user.name.charAt(0).toUpperCase() : 'U';
+                avatarDiv.innerHTML = `<span class="text-3xl font-bold">${initials}</span>`;
+            }
+            
+            // Load bookings count
+            const bookings = JSON.parse(localStorage.getItem('rentit_bookings') || '[]');
+            document.getElementById('total-bookings').innerText = bookings.length;
+            
+            // Member since
+            if (user.loginTime) {
+                const date = new Date(user.loginTime);
+                document.getElementById('member-since').innerText = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+            }
+        });
+
+        function editProfile() {
+            alert('Edit profile feature coming soon!');
+        }
+    </script>
+</body>
+</html>

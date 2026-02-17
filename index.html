@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rentit - The Rental Marketplace</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Plus Jakarta Sans for a modern tech vibe -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4f46e5', // Indigo 600
+                        primaryDark: '#4338ca',
+                        secondary: '#0ea5e9', // Sky Blue
+                        surface: '#f8fafc',
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                        'card': '0 0 0 1px rgba(0,0,0,0.05), 0 2px 8px rgba(0,0,0,0.05)',
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.3s ease-in-out',
+                        'slide-in': 'slideIn 0.3s ease-out forwards',
+                        'bounce-slow': 'bounce 2s infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideIn: {
+                            '0%': { transform: 'translateX(100%)' },
+                            '100%': { transform: 'translateX(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+        .category-chip.active { background-color: #1e293b; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .hero-pattern { background-color: #4f46e5; background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+    </style>
+</head>
+<body class="font-sans bg-surface text-slate-800 relative overflow-x-hidden">
+
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-200 transition-all">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Brand -->
+                <div class="flex items-center gap-2.5 cursor-pointer group" onclick="goHome()">
+                    <div class="relative flex items-center justify-center w-10 h-10 bg-slate-900 rounded-xl shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-all duration-300">
+                        <i class="fa-solid fa-cube text-white text-lg group-hover:rotate-12 transition-transform duration-300"></i>
+                        <div class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-primary rounded-full border-2 border-white"></div>
+                    </div>
+                    <span class="text-2xl font-bold tracking-tight text-slate-900 group-hover:text-primary transition-colors">Rentit</span>
+                </div>
+
+                <!-- Tabs -->
+                <div class="hidden md:flex bg-gray-100 p-1 rounded-xl">
+                    <button onclick="switchMainTab('products')" id="tab-products" class="px-6 py-2 rounded-lg text-sm font-semibold transition-all shadow-sm bg-white text-primary">Products</button>
+                    <button onclick="switchMainTab('services')" id="tab-services" class="px-6 py-2 rounded-lg text-sm font-semibold text-gray-500 hover:text-gray-900 transition-all">Services</button>
+                    <button onclick="switchMainTab('spaces')" id="tab-spaces" class="px-6 py-2 rounded-lg text-sm font-semibold text-gray-500 hover:text-gray-900 transition-all">Spaces</button>
+                </div>
+
+                <!-- Right Actions -->
+                <div class="flex items-center gap-4">
+                    <!-- Cart Button (Updated) -->
+                    <button onclick="toggleCart()" class="relative p-2 text-gray-600 hover:text-primary transition group">
+                        <i class="fa-solid fa-cart-shopping text-xl group-hover:scale-110 transition-transform"></i>
+                        <span id="cart-count" class="hidden absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white">0</span>
+                    </button>
+
+                    <!-- Auth Buttons -->
+                    <div class="flex items-center gap-3">
+                        <button onclick="openListingModal()" class="hidden sm:block text-sm font-medium text-gray-600 hover:text-primary transition">List Item</button>
+                        <button onclick="openLoginModal()" class="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2 rounded-lg text-sm font-bold transition shadow-lg shadow-slate-900/20">Sign In</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div id="home-view">
+        <!-- Hero Section -->
+        <div class="hero-pattern text-white py-12 px-4 mb-6">
+            <div class="max-w-4xl mx-auto text-center">
+                <h1 class="text-3xl md:text-4xl font-bold mb-4">Rent anything, anytime.</h1>
+                <p class="text-indigo-100 text-lg mb-6">From cameras to coders, find what you need without buying it.</p>
+                <div class="bg-white p-2 rounded-2xl shadow-xl max-w-2xl mx-auto flex flex-col sm:flex-row gap-2">
+                    <div class="flex-1 flex items-center px-4 bg-gray-50 rounded-xl h-12 cursor-pointer hover:bg-gray-100 transition" onclick="detectLocation()">
+                        <i class="fa-solid fa-location-dot text-primary mr-3"></i>
+                        <input id="search-location" type="text" placeholder="Where are you?" class="bg-transparent w-full outline-none text-gray-900 placeholder-gray-500 text-sm font-medium cursor-pointer" readonly>
+                    </div>
+                    <div class="flex-1 flex items-center px-4 bg-gray-50 rounded-xl h-12 border-l-0 sm:border-l border-white">
+                        <i class="fa-regular fa-calendar text-gray-400 mr-3"></i>
+                        <input type="text" placeholder="When do you need it?" class="bg-transparent w-full outline-none text-gray-900 placeholder-gray-500 text-sm">
+                    </div>
+                    <button class="bg-primary hover:bg-primaryDark text-white h-12 px-8 rounded-xl font-semibold transition shadow-md">Search</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="sticky top-16 z-30 bg-white/95 backdrop-blur border-b border-gray-100 py-3 shadow-sm">
+            <div class="max-w-7xl mx-auto px-4">
+                <div id="sub-category-container" class="flex space-x-3 overflow-x-auto hide-scroll pb-1"></div>
+            </div>
+        </div>
+
+        <!-- Grid -->
+        <main class="max-w-7xl mx-auto px-4 py-8">
+            <div class="flex justify-between items-end mb-6">
+                <div>
+                    <h2 id="section-title" class="text-2xl font-bold text-slate-900">Trending Products</h2>
+                    <p class="text-slate-500 text-sm mt-1">Highly rated rentals near you</p>
+                </div>
+                <div class="flex gap-2">
+                    <button class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100"><i class="fa-solid fa-arrow-left text-xs"></i></button>
+                    <button class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100"><i class="fa-solid fa-arrow-right text-xs"></i></button>
+                </div>
+            </div>
+            <div id="listings-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+        </main>
+    </div>
+
+    <!-- Product Details -->
+    <div id="product-details-view" class="hidden max-w-7xl mx-auto px-4 py-8 pt-24 animate-fade-in">
+        <button onclick="goHome()" class="mb-6 flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-slate-900 transition bg-white px-4 py-2 rounded-full shadow-sm border border-gray-200">
+            <i class="fa-solid fa-arrow-left"></i> Back to Browse
+        </button>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div class="aspect-[4/3] rounded-3xl overflow-hidden bg-gray-100 shadow-lg relative group">
+                <img id="detail-img" src="" class="w-full h-full object-cover transition duration-700 group-hover:scale-105">
+                <div class="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-lg text-xs font-bold shadow-sm flex items-center gap-1"><i class="fa-regular fa-image"></i> View Photos</div>
+            </div>
+            <div class="flex flex-col">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <span id="detail-tag" class="hidden bg-slate-900 text-white text-[10px] font-bold px-2 py-1 rounded mb-3 inline-block uppercase tracking-wide"></span>
+                        <h1 id="detail-title" class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-2 leading-tight"></h1>
+                        <div class="flex items-center gap-2 text-sm text-gray-500 font-medium"><i class="fa-solid fa-location-dot text-primary"></i> <span id="detail-location">Mumbai, India</span></div>
+                    </div>
+                    <button class="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-red-50 hover:border-red-200 hover:text-red-500 transition shadow-sm"><i class="fa-regular fa-heart text-lg"></i></button>
+                </div>
+                <div class="flex items-center gap-4 mb-6 pb-6 border-b border-gray-100">
+                    <div class="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-lg"><i class="fa-solid fa-star text-yellow-500 text-sm"></i><span id="detail-rating" class="font-bold text-slate-900 text-sm"></span></div>
+                    <span class="text-sm text-gray-500 underline cursor-pointer hover:text-primary">128 verified reviews</span>
+                </div>
+                <div class="flex items-center gap-4 mb-8 p-4 bg-white rounded-2xl border border-gray-100 shadow-soft">
+                    <div class="relative"><div class="w-12 h-12 rounded-full bg-slate-100 overflow-hidden border-2 border-white shadow-sm"><img src="https://ui-avatars.com/api/?name=Rent+It&background=0D8ABC&color=fff" class="w-full h-full object-cover"></div><div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div></div>
+                    <div><p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Listed by</p><p class="text-base font-bold text-slate-900">Verified Renter</p></div>
+                    <button class="ml-auto text-xs font-bold text-primary border border-primary/20 bg-primary/5 px-4 py-2 rounded-lg hover:bg-primary hover:text-white transition">Chat Now</button>
+                </div>
+                <div class="mb-8">
+                    <h3 class="font-bold text-slate-900 mb-3 text-lg">Description</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">Maintained in excellent condition. Ready for immediate rental. Perfect for your upcoming projects or personal use.</p>
+                </div>
+                <div class="mt-auto pt-6 border-t border-gray-100 flex items-center justify-between bg-white sticky bottom-0 py-4 lg:static">
+                    <div><p class="text-xs text-gray-400 font-bold uppercase mb-1">Total Price</p><div class="flex items-baseline gap-1"><span id="detail-price" class="text-3xl font-bold text-slate-900"></span><span id="detail-unit" class="text-gray-500 font-medium"></span></div></div>
+                    <div class="flex gap-2">
+                         <button onclick="addToCart()" class="bg-white border-2 border-slate-900 text-slate-900 px-6 py-4 rounded-xl font-bold text-lg hover:bg-slate-50 transition">Add to Cart</button>
+                         <button onclick="openLoginModal()" class="bg-slate-900 hover:bg-slate-800 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-xl shadow-slate-900/20 hover:-translate-y-1 transition">Rent Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CART SIDEBAR -->
+    <div id="cart-sidebar" class="fixed inset-y-0 right-0 w-full sm:w-96 bg-white shadow-2xl z-[60] transform translate-x-full transition-transform duration-300 flex flex-col">
+        <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+            <h2 class="font-bold text-lg text-slate-900"><i class="fa-solid fa-bag-shopping mr-2"></i>Your Cart</h2>
+            <button onclick="toggleCart()" class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-gray-500 hover:text-black shadow-sm"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="cart-items" class="flex-1 overflow-y-auto p-5 space-y-4">
+            <div id="cart-empty" class="flex flex-col items-center justify-center h-64 text-center text-gray-400">
+                <i class="fa-solid fa-basket-shopping text-4xl mb-3 opacity-20"></i>
+                <p>Your cart is empty</p>
+            </div>
+        </div>
+        <div class="p-5 border-t border-gray-100 bg-white">
+            <div class="flex justify-between font-bold text-lg mb-4 text-slate-900"><span>Total</span><span id="cart-total">₹0</span></div>
+            <button onclick="openLoginModal()" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-3.5 rounded-xl transition shadow-lg shadow-primary/30">Checkout</button>
+        </div>
+    </div>
+    <div id="cart-overlay" onclick="toggleCart()" class="fixed inset-0 bg-slate-900/20 z-[55] hidden backdrop-blur-sm transition-opacity"></div>
+
+    <!-- ADD LISTING MODAL -->
+    <div id="listing-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[100] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-fade-in flex flex-col max-h-[90vh]">
+            <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                <h3 class="font-bold text-lg text-slate-900">List your Item</h3>
+                <button onclick="closeListingModal()" class="text-gray-400 hover:text-black"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-6 overflow-y-auto">
+                <form onsubmit="event.preventDefault(); showToast('Listing Created Successfully!'); closeListingModal();" class="space-y-4">
+                    <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Item Name</label><input type="text" placeholder="e.g. GoPro Hero 9" class="w-full border border-gray-200 bg-gray-50 rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary focus:bg-white outline-none transition"></div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Category</label><select class="w-full border border-gray-200 bg-gray-50 rounded-lg p-3 text-sm outline-none"><option>Product</option><option>Service</option><option>Space</option></select></div>
+                        <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Price (₹)</label><input type="number" placeholder="500" class="w-full border border-gray-200 bg-gray-50 rounded-lg p-3 text-sm outline-none"></div>
+                    </div>
+                    <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Upload Image</label><div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center text-gray-400 hover:bg-gray-50 hover:border-primary cursor-pointer transition"><i class="fa-solid fa-cloud-arrow-up text-2xl mb-2"></i><p class="text-xs">Click to upload photo</p></div></div>
+                    <button type="submit" class="w-full bg-slate-900 hover:bg-black text-white font-bold py-3.5 rounded-xl mt-2 transition shadow-lg">Publish Listing</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white px-6 py-3 rounded-lg shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 z-[120] flex items-center gap-3 font-medium">
+        <i class="fa-solid fa-circle-check text-green-400"></i> <span id="toast-msg">Success</span>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden transform transition-all scale-100">
+            <div class="p-8 text-center">
+                <div class="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fa-solid fa-fingerprint text-3xl text-primary"></i></div>
+                <h2 class="text-2xl font-bold mb-2 text-slate-900">Welcome Back</h2>
+                <p class="text-gray-500 text-sm mb-6">Login to manage your rentals & cart.</p>
+                <button onclick="document.getElementById('auth-modal').classList.add('hidden'); showToast('Logged in Successfully!');" class="w-full border border-gray-200 bg-white rounded-xl py-3.5 flex items-center justify-center hover:bg-gray-50 transition gap-2 font-bold text-slate-700 mb-3">
+                    <i class="fa-brands fa-google text-red-500"></i> Continue with Google
+                </button>
+                <button onclick="document.getElementById('auth-modal').classList.add('hidden')" class="text-xs text-gray-400 hover:text-black">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Location Modal -->
+    <div id="location-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[110] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden animate-fade-in text-center p-8">
+            <div class="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce-slow"><i class="fa-solid fa-location-dot text-3xl text-primary"></i></div>
+            <h2 class="text-2xl font-bold text-slate-900 mb-2">Enable Location</h2>
+            <p class="text-gray-500 text-sm mb-6">See what's available near you.</p>
+            <button onclick="detectLocation()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-xl transition shadow-lg mb-3">Use Current Location</button>
+            <button onclick="document.getElementById('location-modal').classList.add('hidden')" class="w-full border border-gray-200 text-slate-600 font-bold py-3.5 rounded-xl hover:bg-gray-50 transition">Enter Manually</button>
+        </div>
+    </div>
+
+    <script>
+        // Data
+        const subCategories = {
+            products: [{name:'All'}, {name:'Cameras'}, {name:'Electronics'}, {name:'Vehicles'}, {name:'Furniture'}, {name:'Sports'}, {name:'Music'}, {name:'Fashion'}, {name:'Tools'}],
+            services: [{name:'All'}, {name:'Tech'}, {name:'Home'}, {name:'Personal'}, {name:'Events'}],
+            spaces: [{name:'All'}, {name:'Vacation'}, {name:'Apartments'}, {name:'Offices'}, {name:'Halls'}, {name:'Studios'}]
+        };
+        const listings = {
+            products: [
+                { title: "Canon EOS R5", price: "₹2,500", rating: "4.9", img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=600&q=80", unit: "/day", tag: "Hot" },
+                { title: "Royal Enfield 350", price: "₹1,200", rating: "4.8", img: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=600&q=80", unit: "/day", tag: null },
+                { title: "Sony PS5", price: "₹800", rating: "5.0", img: "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?auto=format&fit=crop&w=600&q=80", unit: "/day", tag: "New" },
+                { title: "DJI Mavic Air", price: "₹3,000", rating: "4.7", img: "https://images.unsplash.com/photo-1579829366248-204fe8413f31?auto=format&fit=crop&w=600&q=80", unit: "/day", tag: null }
+            ],
+            services: [
+                { title: "Python Dev", price: "₹1,000", rating: "5.0", img: "https://images.unsplash.com/photo-1537511446984-935f663eb1f4?auto=format&fit=crop&w=600&q=80", unit: "/hr", tag: "Top Rated" }
+            ],
+            spaces: [
+                { title: "Goa Villa", price: "₹12k", rating: "4.9", img: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=600&q=80", unit: "/night", tag: "Luxe" }
+            ]
+        };
+
+        let cart = [];
+        let currentItem = null;
+
+        window.onload = function() {
+            switchMainTab('products');
+            setTimeout(() => document.getElementById('location-modal').classList.remove('hidden'), 1000);
+        }
+
+        function switchMainTab(cat) {
+            document.querySelectorAll('#tab-products, #tab-services, #tab-spaces').forEach(el => el.className = "px-6 py-2 rounded-lg text-sm font-semibold text-gray-500 hover:text-gray-900 transition-all");
+            document.getElementById(`tab-${cat}`).className = "px-6 py-2 rounded-lg text-sm font-semibold bg-white text-primary shadow-sm transition-all";
+            
+            document.getElementById('sub-category-container').innerHTML = subCategories[cat].map((i, idx) => `<button class="category-chip px-5 py-2 rounded-full text-sm font-medium border border-gray-200 whitespace-nowrap ${idx===0?'active':''} hover:bg-gray-50">${i.name}</button>`).join('');
+            
+            document.getElementById('listings-grid').innerHTML = listings[cat].map((item, idx) => `
+                <div class="group bg-white rounded-2xl p-3 shadow-card hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer" onclick="openDetails('${cat}', ${idx})">
+                    <div class="relative rounded-xl h-48 mb-3 overflow-hidden">
+                        <img src="${item.img}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        ${item.tag ? `<span class="absolute top-2 left-2 bg-slate-900/80 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wide">${item.tag}</span>` : ''}
+                    </div>
+                    <div class="px-1"><h3 class="font-bold text-slate-900 text-lg leading-tight truncate">${item.title}</h3>
+                    <div class="flex justify-between mt-2 pt-2 border-t border-gray-100"><span class="font-bold text-slate-900">${item.price}</span><span class="text-primary text-sm font-bold group-hover:underline">Details <i class="fa-solid fa-arrow-right text-xs"></i></span></div></div>
+                </div>
+            `).join('');
+            goHome();
+        }
+
+        function openDetails(cat, idx) {
+            currentItem = listings[cat][idx];
+            document.getElementById('detail-img').src = currentItem.img;
+            document.getElementById('detail-title').innerText = currentItem.title;
+            document.getElementById('detail-rating').innerText = currentItem.rating;
+            document.getElementById('detail-price').innerText = currentItem.price;
+            document.getElementById('detail-unit').innerText = currentItem.unit;
+            
+            const tagEl = document.getElementById('detail-tag');
+            if(currentItem.tag) { tagEl.innerText = currentItem.tag; tagEl.classList.remove('hidden'); } else { tagEl.classList.add('hidden'); }
+
+            document.getElementById('home-view').classList.add('hidden');
+            document.getElementById('product-details-view').classList.remove('hidden');
+            window.scrollTo(0,0);
+        }
+
+        function goHome() {
+            document.getElementById('product-details-view').classList.add('hidden');
+            document.getElementById('home-view').classList.remove('hidden');
+            window.scrollTo(0,0);
+        }
+
+        // Cart
+        function toggleCart() {
+            const sb = document.getElementById('cart-sidebar');
+            const ov = document.getElementById('cart-overlay');
+            if(sb.classList.contains('translate-x-full')) { sb.classList.remove('translate-x-full'); ov.classList.remove('hidden'); }
+            else { sb.classList.add('translate-x-full'); ov.classList.add('hidden'); }
+        }
+
+        function addToCart() {
+            if(!currentItem) return;
+            cart.push(currentItem);
+            updateCart();
+            toggleCart();
+            showToast("Item added to cart!");
+        }
+
+        function updateCart() {
+            const badge = document.getElementById('cart-count');
+            badge.innerText = cart.length;
+            badge.classList.remove('hidden');
+            const container = document.getElementById('cart-items');
+            
+            if(cart.length === 0) {
+                container.innerHTML = `<div class="flex flex-col items-center justify-center h-full text-center text-gray-400"><i class="fa-solid fa-basket-shopping text-4xl mb-3 opacity-20"></i><p>Your cart is empty</p></div>`;
+            } else {
+                container.innerHTML = cart.map((i, idx) => `
+                    <div class="flex gap-3 bg-gray-50 p-2 rounded-lg items-center animate-fade-in">
+                        <img src="${i.img}" class="w-14 h-14 rounded-md object-cover">
+                        <div class="flex-1"><p class="font-bold text-sm text-slate-900">${i.title}</p><p class="text-xs text-gray-500">${i.price}</p></div>
+                        <button onclick="cart.splice(${idx},1); updateCart()" class="text-gray-400 hover:text-red-500 p-2"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function detectLocation() {
+            const btn = document.querySelector('#location-modal button');
+            const old = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Locating...';
+            setTimeout(() => {
+                document.getElementById('search-location').value = "Ahmedabad, Gujarat";
+                document.getElementById('detail-location').innerText = "Ahmedabad, Gujarat";
+                document.getElementById('location-modal').classList.add('hidden');
+                btn.innerHTML = old;
+                showToast("Location Updated!");
+            }, 1000);
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            t.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 3000);
+        }
+
+        function openLoginModal() { document.getElementById('auth-modal').classList.remove('hidden'); }
+        function openListingModal() { document.getElementById('listing-modal').classList.remove('hidden'); }
+        function closeListingModal() { document.getElementById('listing-modal').classList.add('hidden'); }
+    </script>
+</body>
+</html>

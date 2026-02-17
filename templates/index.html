@@ -56,9 +56,159 @@
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
         .category-chip.active { background-color: #1e293b; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .hero-pattern { background-color: #4f46e5; background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+        
+        /* Cinematic Splash Screen */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0f172a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1), 
+                        opacity 1s cubic-bezier(0.645, 0.045, 0.355, 1), 
+                        visibility 1s;
+            will-change: transform, opacity;
+        }
+        
+        .splash-loader {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+        }
+        
+        .ambient-glow {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(50px);
+            animation: breathe 3s infinite ease-in-out;
+        }
+        
+        .splash-brand-container {
+            display: flex;
+            align-items: center;
+            z-index: 2;
+            transform-style: preserve-3d;
+        }
+        
+        .splash-logo-box {
+            width: 85px;
+            height: 85px;
+            background: #0f172a;
+            color: white;
+            font-size: 2.8rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 24px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            animation: logoEntrance 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .splash-logo-box::before {
+            content: "";
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 14px;
+            height: 14px;
+            background: #4f46e5;
+            border-radius: 50%;
+            border: 2px solid #0f172a;
+            z-index: 10;
+        }
+        
+        .splash-logo-box::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -150%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transform: rotate(30deg);
+            animation: shimmer 2s infinite;
+        }
+        
+        .splash-text-reveal {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: white;
+            letter-spacing: 8px;
+            overflow: hidden;
+            white-space: nowrap;
+            max-width: 0;
+            opacity: 0;
+            margin-left: 0;
+            transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        
+        .show-text .splash-text-reveal {
+            max-width: 400px;
+            opacity: 1;
+            margin-left: 25px;
+        }
+        
+        @keyframes shimmer {
+            0% { left: -150%; }
+            50%, 100% { left: 150%; }
+        }
+        
+        @keyframes breathe {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.8;
+            }
+        }
+        
+        @keyframes logoEntrance {
+            from {
+                transform: scale(0.5) rotateY(-90deg);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1) rotateY(0deg);
+                opacity: 1;
+            }
+        }
+        
+        .fade-out {
+            transform: scale(1.5);
+            opacity: 0;
+            visibility: hidden;
+        }
     </style>
 </head>
 <body class="font-sans bg-surface text-slate-800 relative overflow-x-hidden">
+
+    <!-- Cinematic Splash Screen -->
+    <div id="splash-screen">
+        <div class="splash-loader">
+            <div class="ambient-glow"></div>
+            <div class="splash-brand-container" id="brand-container">
+                <div class="splash-logo-box">
+                    <i class="fa-solid fa-cube"></i>
+                </div>
+                <div class="splash-text-reveal">RENTIT</div>
+            </div>
+        </div>
+    </div>
 
     <!-- Navbar -->
     <nav class="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-200 transition-all">
@@ -122,14 +272,14 @@
                 <p class="text-indigo-100 text-lg mb-6">From cameras to coders, find what you need without buying it.</p>
                 <div class="bg-white p-2 rounded-2xl shadow-xl max-w-2xl mx-auto flex flex-col sm:flex-row gap-2">
                     <div class="flex-1 flex items-center px-4 bg-gray-50 rounded-xl h-12">
-                        <i class="fa-solid fa-location-dot text-primary mr-3"></i>
-                        <input id="search-pincode" type="text" placeholder="Enter pincode (e.g., 400001)" class="bg-transparent w-full outline-none text-gray-900 placeholder-gray-500 text-sm font-medium" maxlength="6" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                        <i class="fa-solid fa-magnifying-glass text-primary mr-3"></i>
+                        <input id="search-input" type="text" placeholder="Search for cameras, bikes, services..." class="bg-transparent w-full outline-none text-gray-900 placeholder-gray-500 text-sm font-medium" onkeypress="if(event.key==='Enter') performSearch()">
                     </div>
-                    <button onclick="detectNearMe()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 h-12 px-6 rounded-xl font-semibold transition flex items-center gap-2">
-                        <i class="fa-solid fa-location-crosshairs"></i>
-                        <span class="hidden sm:inline">Near Me</span>
-                    </button>
-                    <button onclick="searchByLocation()" class="bg-primary hover:bg-primaryDark text-white h-12 px-8 rounded-xl font-semibold transition shadow-md">Search</button>
+                    <div class="flex-1 flex items-center px-4 bg-gray-50 rounded-xl h-12">
+                        <i class="fa-solid fa-location-dot text-primary mr-3"></i>
+                        <input id="search-pincode" type="text" placeholder="Pincode (optional)" class="bg-transparent w-full outline-none text-gray-900 placeholder-gray-500 text-sm font-medium" maxlength="6" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                    </div>
+                    <button onclick="performSearch()" class="bg-primary hover:bg-primaryDark text-white h-12 px-8 rounded-xl font-semibold transition shadow-md">Search</button>
                 </div>
             </div>
         </div>
@@ -139,26 +289,32 @@
             <div class="max-w-7xl mx-auto px-4 flex items-center justify-between gap-4">
                 <div id="sub-category-container" class="flex space-x-3 overflow-x-auto hide-scroll pb-1 flex-1"></div>
                 <div class="flex items-center gap-2">
-                    <select onchange="sortListings(this.value)" class="px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium bg-white hover:bg-gray-50 transition outline-none cursor-pointer">
-                        <option value="">Sort by</option>
-                        <option value="asc">Price: Low to High</option>
-                        <option value="desc">Price: High to Low</option>
-                    </select>
+                    <div class="relative">
+                        <button onclick="toggleSortDropdown()" class="px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium bg-white hover:bg-gray-50 transition outline-none cursor-pointer flex items-center gap-2">
+                            <span id="sort-label">Sort by</span>
+                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                        </button>
+                        <div id="sort-dropdown" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50">
+                            <button onclick="selectSort('', 'Sort by')" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition">
+                                Default
+                            </button>
+                            <button onclick="selectSort('asc', 'Price: Low to High')" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition">
+                                Price: Low to High
+                            </button>
+                            <button onclick="selectSort('desc', 'Price: High to Low')" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition">
+                                Price: High to Low
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Grid -->
         <main class="max-w-7xl mx-auto px-4 py-8">
-            <div class="flex justify-between items-end mb-6">
-                <div>
-                    <h2 id="section-title" class="text-2xl font-bold text-slate-900">Trending Products</h2>
-                    <p class="text-slate-500 text-sm mt-1">Highly rated rentals near you</p>
-                </div>
-                <div class="flex gap-2">
-                    <button class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100"><i class="fa-solid fa-arrow-left text-xs"></i></button>
-                    <button class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100"><i class="fa-solid fa-arrow-right text-xs"></i></button>
-                </div>
+            <div class="mb-6">
+                <h2 id="section-title" class="text-2xl font-bold text-slate-900">Trending Products</h2>
+                <p class="text-slate-500 text-sm mt-1">Highly rated rentals near you</p>
             </div>
             <div id="listings-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
         </main>
@@ -195,7 +351,7 @@
                         </div>
                     </div>
                     <div class="flex items-center gap-3">
-                        <button class="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 rounded-lg transition text-sm font-semibold">
+                        <button onclick="shareItem()" class="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 rounded-lg transition text-sm font-semibold">
                             <i class="fa-solid fa-share-nodes"></i> Share
                         </button>
                         <button id="wishlist-btn" onclick="toggleWishlistItem()" class="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 rounded-lg transition text-sm font-semibold">
@@ -207,26 +363,26 @@
 
             <!-- Image Gallery -->
             <div class="grid grid-cols-4 gap-2 rounded-2xl overflow-hidden mb-12 h-[500px]">
-                <div class="col-span-2 row-span-2 relative group cursor-pointer">
+                <div class="col-span-2 row-span-2 relative group cursor-pointer" onclick="openImageGallery(0)">
                     <img id="detail-img-main" src="" class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition"></div>
                 </div>
-                <div class="relative group cursor-pointer">
+                <div class="relative group cursor-pointer" onclick="openImageGallery(1)">
                     <img id="detail-img-1" src="" class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition"></div>
                 </div>
-                <div class="relative group cursor-pointer">
+                <div class="relative group cursor-pointer" onclick="openImageGallery(2)">
                     <img id="detail-img-2" src="" class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition"></div>
                 </div>
-                <div class="relative group cursor-pointer">
+                <div class="relative group cursor-pointer" onclick="openImageGallery(3)">
                     <img id="detail-img-3" src="" class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition"></div>
                 </div>
-                <div class="relative group cursor-pointer">
+                <div class="relative group cursor-pointer" onclick="openImageGallery(4)">
                     <img id="detail-img-4" src="" class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition"></div>
-                    <button class="absolute bottom-4 right-4 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-semibold hover:bg-gray-50 transition flex items-center gap-2">
+                    <button onclick="event.stopPropagation(); openImageGallery(0)" class="absolute bottom-4 right-4 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-semibold hover:bg-gray-50 transition flex items-center gap-2">
                         <i class="fa-solid fa-grid"></i> Show all photos
                     </button>
                 </div>
@@ -251,7 +407,7 @@
                                     <p class="text-sm text-gray-500">Joined in 2024</p>
                                 </div>
                             </div>
-                            <button class="px-6 py-3 border-2 border-slate-900 text-slate-900 font-semibold rounded-xl hover:bg-slate-50 transition">
+                            <button onclick="contactHost()" class="px-6 py-3 border-2 border-slate-900 text-slate-900 font-semibold rounded-xl hover:bg-slate-50 transition">
                                 Contact Host
                             </button>
                         </div>
@@ -288,36 +444,26 @@
 
                     <!-- What's Included -->
                     <div class="pb-8 border-b border-gray-200">
-                        <h2 class="text-2xl font-bold text-slate-900 mb-6">What's included</h2>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="flex items-center gap-3">
-                                <i class="fa-solid fa-circle-check text-emerald-600 text-xl"></i>
-                                <span class="text-gray-700">Excellent condition</span>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <i class="fa-solid fa-circle-check text-emerald-600 text-xl"></i>
-                                <span class="text-gray-700">Ready to use</span>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <i class="fa-solid fa-circle-check text-emerald-600 text-xl"></i>
-                                <span class="text-gray-700">Flexible pickup</span>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <i class="fa-solid fa-circle-check text-emerald-600 text-xl"></i>
-                                <span class="text-gray-700">24/7 support</span>
-                            </div>
+                        <h2 id="features-title" class="text-2xl font-bold text-slate-900 mb-6">What's included</h2>
+                        <div id="features-grid" class="grid grid-cols-2 gap-4">
+                            <!-- Will be populated dynamically based on category -->
                         </div>
                     </div>
 
                     <!-- Reviews Section -->
                     <div class="pb-8">
-                        <h2 class="text-2xl font-bold text-slate-900 mb-6">
-                            <i class="fa-solid fa-star mr-2"></i>
-                            <span id="detail-rating-2"></span> · 128 reviews
-                        </h2>
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-2xl font-bold text-slate-900">
+                                <i class="fa-solid fa-star mr-2"></i>
+                                <span id="detail-rating-2"></span> · <span id="review-count">0</span> reviews
+                            </h2>
+                            <button onclick="openReviewModal()" class="px-6 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primaryDark transition">
+                                <i class="fa-solid fa-pen mr-2"></i> Write a Review
+                            </button>
+                        </div>
                         <div class="grid grid-cols-2 gap-6 mb-8">
                             <div class="flex items-center justify-between">
-                                <span class="text-gray-700">Cleanliness</span>
+                                <span class="text-gray-700">Quality</span>
                                 <div class="flex items-center gap-2">
                                     <div class="w-32 h-1 bg-gray-200 rounded-full overflow-hidden">
                                         <div class="h-full bg-slate-900" style="width: 96%"></div>
@@ -353,43 +499,12 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Sample Reviews -->
-                        <div class="space-y-6">
-                            <div class="flex gap-4">
-                                <img src="https://ui-avatars.com/api/?name=John+Doe&background=random" class="w-12 h-12 rounded-full">
-                                <div class="flex-1">
-                                    <div class="flex items-center justify-between mb-2">
-                                        <div>
-                                            <p class="font-semibold text-slate-900">John Doe</p>
-                                            <p class="text-sm text-gray-500">March 2024</p>
-                                        </div>
-                                        <div class="flex items-center gap-1">
-                                            <i class="fa-solid fa-star text-sm"></i>
-                                            <span class="font-semibold text-sm">5.0</span>
-                                        </div>
-                                    </div>
-                                    <p class="text-gray-700">Great experience! The item was exactly as described and in perfect condition. Highly recommend!</p>
-                                </div>
-                            </div>
-                            <div class="flex gap-4">
-                                <img src="https://ui-avatars.com/api/?name=Sarah+Smith&background=random" class="w-12 h-12 rounded-full">
-                                <div class="flex-1">
-                                    <div class="flex items-center justify-between mb-2">
-                                        <div>
-                                            <p class="font-semibold text-slate-900">Sarah Smith</p>
-                                            <p class="text-sm text-gray-500">February 2024</p>
-                                        </div>
-                                        <div class="flex items-center gap-1">
-                                            <i class="fa-solid fa-star text-sm"></i>
-                                            <span class="font-semibold text-sm">4.8</span>
-                                        </div>
-                                    </div>
-                                    <p class="text-gray-700">Excellent service and quality. The host was very responsive and helpful throughout the rental period.</p>
-                                </div>
-                            </div>
+                        <!-- Reviews List -->
+                        <div id="reviews-list" class="space-y-6">
+                            <!-- Will be populated dynamically -->
                         </div>
-                        <button class="mt-6 px-6 py-3 border-2 border-slate-900 text-slate-900 font-semibold rounded-xl hover:bg-slate-50 transition">
-                            Show all 128 reviews
+                        <button onclick="showAllReviews()" id="show-all-reviews-btn" class="hidden mt-6 px-6 py-3 border-2 border-slate-900 text-slate-900 font-semibold rounded-xl hover:bg-slate-50 transition">
+                            Show all reviews
                         </button>
                     </div>
                 </div>
@@ -406,11 +521,11 @@
                             <div class="space-y-3 mb-6">
                                 <div class="border-2 border-gray-300 rounded-xl p-4">
                                     <label class="text-xs font-semibold text-gray-700 uppercase">Start Date</label>
-                                    <input type="date" class="w-full mt-1 text-sm font-semibold outline-none">
+                                    <input type="date" id="detail-start-date" class="w-full mt-1 text-sm font-semibold outline-none">
                                 </div>
                                 <div class="border-2 border-gray-300 rounded-xl p-4">
                                     <label class="text-xs font-semibold text-gray-700 uppercase">End Date</label>
-                                    <input type="date" class="w-full mt-1 text-sm font-semibold outline-none">
+                                    <input type="date" id="detail-end-date" class="w-full mt-1 text-sm font-semibold outline-none">
                                 </div>
                             </div>
 
@@ -421,16 +536,16 @@
 
                             <div class="space-y-3 py-4 border-t border-gray-200">
                                 <div class="flex justify-between text-sm">
-                                    <span class="text-gray-700 underline">₹500 x 3 days</span>
-                                    <span class="font-semibold">₹1,500</span>
+                                    <span class="text-gray-700 underline" id="detail-price-breakdown">Select dates</span>
+                                    <span class="font-semibold" id="detail-rental-amount">₹0</span>
                                 </div>
                                 <div class="flex justify-between text-sm">
                                     <span class="text-gray-700 underline">Service fee</span>
-                                    <span class="font-semibold">₹150</span>
+                                    <span class="font-semibold">₹60</span>
                                 </div>
                                 <div class="flex justify-between pt-3 border-t border-gray-200 font-bold">
                                     <span>Total</span>
-                                    <span>₹1,650</span>
+                                    <span id="detail-total-amount">₹60</span>
                                 </div>
                             </div>
                         </div>
@@ -490,6 +605,60 @@
     <!-- TOAST NOTIFICATION -->
     <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white px-6 py-3 rounded-lg shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 z-[120] flex items-center gap-3 font-medium">
         <i class="fa-solid fa-circle-check text-green-400"></i> <span id="toast-msg">Success</span>
+    </div>
+
+    <!-- REVIEW MODAL -->
+    <div id="review-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div onclick="closeReviewModal()" class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"></div>
+        <div class="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 animate-fade-in">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-2xl font-bold text-slate-900">Write a Review</h3>
+                <button onclick="closeReviewModal()" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 transition">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            
+            <form onsubmit="submitReview(event)" class="space-y-4">
+                <!-- Rating -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Rating</label>
+                    <div class="flex gap-2">
+                        <button type="button" onclick="setRating(1)" class="rating-star text-3xl text-gray-300 hover:text-yellow-500 transition">
+                            <i class="fa-solid fa-star"></i>
+                        </button>
+                        <button type="button" onclick="setRating(2)" class="rating-star text-3xl text-gray-300 hover:text-yellow-500 transition">
+                            <i class="fa-solid fa-star"></i>
+                        </button>
+                        <button type="button" onclick="setRating(3)" class="rating-star text-3xl text-gray-300 hover:text-yellow-500 transition">
+                            <i class="fa-solid fa-star"></i>
+                        </button>
+                        <button type="button" onclick="setRating(4)" class="rating-star text-3xl text-gray-300 hover:text-yellow-500 transition">
+                            <i class="fa-solid fa-star"></i>
+                        </button>
+                        <button type="button" onclick="setRating(5)" class="rating-star text-3xl text-gray-300 hover:text-yellow-500 transition">
+                            <i class="fa-solid fa-star"></i>
+                        </button>
+                    </div>
+                    <input type="hidden" id="review-rating" required>
+                </div>
+
+                <!-- Comment -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Your Review</label>
+                    <textarea id="review-comment" rows="4" required class="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary" placeholder="Share your experience..."></textarea>
+                </div>
+
+                <!-- Submit -->
+                <div class="flex gap-3">
+                    <button type="button" onclick="closeReviewModal()" class="flex-1 px-6 py-3 border-2 border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition">
+                        Cancel
+                    </button>
+                    <button type="submit" class="flex-1 px-6 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primaryDark transition">
+                        Submit Review
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- Auth Modal -->
@@ -606,7 +775,7 @@
                     <div>
                         <label class="flex items-start gap-2 cursor-pointer text-sm">
                             <input type="checkbox" required class="w-4 h-4 mt-0.5 rounded border-gray-300 text-primary focus:ring-primary">
-                            <span class="text-gray-600">I agree to the <a href="#" class="text-primary hover:underline">Terms of Service</a> and <a href="#" class="text-primary hover:underline">Privacy Policy</a></span>
+                            <span class="text-gray-600">I agree to the <a href="/policies#terms" class="text-primary hover:underline">Terms of Service</a> and <a href="/policies#privacy" class="text-primary hover:underline">Privacy Policy</a></span>
                         </label>
                     </div>
                     <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-xl transition shadow-lg">
@@ -633,12 +802,213 @@
         </div>
     </div>
 
+    <!-- Image Gallery Modal -->
+    <div id="image-gallery-modal" class="fixed inset-0 bg-black z-[120] hidden">
+        <button onclick="closeImageGallery()" class="absolute top-4 right-4 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition z-10">
+            <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+        <div class="absolute top-4 left-4 text-white font-semibold z-10">
+            <span id="gallery-counter">1 / 5</span>
+        </div>
+        <div class="h-full flex items-center justify-center p-4">
+            <button onclick="prevImage()" class="absolute left-4 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <img id="gallery-image" src="" class="max-w-full max-h-full object-contain">
+            <button onclick="nextImage()" class="absolute right-4 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Contact Host Modal -->
+    <div id="contact-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[110] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-fade-in">
+            <div class="p-6 border-b border-gray-100">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xl font-bold text-slate-900">Contact Host</h3>
+                    <button onclick="closeContactModal()" class="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center transition">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6">
+                <div class="flex items-center gap-4 mb-6 p-4 bg-gray-50 rounded-xl">
+                    <img id="contact-host-avatar" src="" class="w-12 h-12 rounded-full">
+                    <div>
+                        <p class="font-bold text-slate-900" id="contact-host-name"></p>
+                        <p class="text-sm text-gray-500">Typically responds within an hour</p>
+                    </div>
+                </div>
+                <form onsubmit="sendMessage(event)">
+                    <div class="mb-4">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Your Message</label>
+                        <textarea id="contact-message" required rows="4" placeholder="Hi! I'm interested in renting this item..." class="w-full border-2 border-gray-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary resize-none"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-xl transition">
+                        Send Message
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- All Reviews Modal -->
+    <div id="reviews-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[110] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden animate-fade-in flex flex-col">
+            <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+                <div>
+                    <h3 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-star text-yellow-500"></i>
+                        <span id="reviews-rating">4.9</span> · 128 reviews
+                    </h3>
+                </div>
+                <button onclick="closeReviewsModal()" class="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            
+            <!-- Rating Breakdown -->
+            <div class="p-6 border-b border-gray-100 bg-gray-50">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-700">Cleanliness</span>
+                        <div class="flex items-center gap-2">
+                            <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                <div class="h-full bg-slate-900" style="width: 96%"></div>
+                            </div>
+                            <span class="font-bold text-sm">4.8</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-700">Accuracy</span>
+                        <div class="flex items-center gap-2">
+                            <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                <div class="h-full bg-slate-900" style="width: 100%"></div>
+                            </div>
+                            <span class="font-bold text-sm">5.0</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-700">Communication</span>
+                        <div class="flex items-center gap-2">
+                            <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                <div class="h-full bg-slate-900" style="width: 94%"></div>
+                            </div>
+                            <span class="font-bold text-sm">4.7</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-700">Value</span>
+                        <div class="flex items-center gap-2">
+                            <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                <div class="h-full bg-slate-900" style="width: 98%"></div>
+                            </div>
+                            <span class="font-bold text-sm">4.9</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reviews List -->
+            <div class="flex-1 overflow-y-auto p-6">
+                <div class="space-y-6" id="all-reviews-container">
+                    <!-- Reviews will be loaded here -->
+                    <div class="flex gap-4 pb-6 border-b border-gray-100">
+                        <img src="https://ui-avatars.com/api/?name=John+Doe&background=random" class="w-12 h-12 rounded-full flex-shrink-0">
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between mb-2">
+                                <div>
+                                    <p class="font-bold text-slate-900">John Doe</p>
+                                    <p class="text-sm text-gray-500">March 2024</p>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <i class="fa-solid fa-star text-yellow-500 text-sm"></i>
+                                    <span class="font-bold text-sm">5.0</span>
+                                </div>
+                            </div>
+                            <p class="text-gray-700 leading-relaxed">Great experience! The item was exactly as described and in perfect condition. The host was very responsive and made the pickup process smooth. Highly recommend!</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-4 pb-6 border-b border-gray-100">
+                        <img src="https://ui-avatars.com/api/?name=Sarah+Smith&background=random" class="w-12 h-12 rounded-full flex-shrink-0">
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between mb-2">
+                                <div>
+                                    <p class="font-bold text-slate-900">Sarah Smith</p>
+                                    <p class="text-sm text-gray-500">February 2024</p>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <i class="fa-solid fa-star text-yellow-500 text-sm"></i>
+                                    <span class="font-bold text-sm">4.8</span>
+                                </div>
+                            </div>
+                            <p class="text-gray-700 leading-relaxed">Excellent service and quality. The host was very responsive and helpful throughout the rental period. Would definitely rent again!</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-4 pb-6 border-b border-gray-100">
+                        <img src="https://ui-avatars.com/api/?name=Mike+Johnson&background=random" class="w-12 h-12 rounded-full flex-shrink-0">
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between mb-2">
+                                <div>
+                                    <p class="font-bold text-slate-900">Mike Johnson</p>
+                                    <p class="text-sm text-gray-500">January 2024</p>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <i class="fa-solid fa-star text-yellow-500 text-sm"></i>
+                                    <span class="font-bold text-sm">5.0</span>
+                                </div>
+                            </div>
+                            <p class="text-gray-700 leading-relaxed">Perfect rental experience! Everything was clean, well-maintained, and ready to use. Communication was excellent and pickup/return was hassle-free.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-4 pb-6 border-b border-gray-100">
+                        <img src="https://ui-avatars.com/api/?name=Emily+Davis&background=random" class="w-12 h-12 rounded-full flex-shrink-0">
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between mb-2">
+                                <div>
+                                    <p class="font-bold text-slate-900">Emily Davis</p>
+                                    <p class="text-sm text-gray-500">December 2023</p>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <i class="fa-solid fa-star text-yellow-500 text-sm"></i>
+                                    <span class="font-bold text-sm">4.9</span>
+                                </div>
+                            </div>
+                            <p class="text-gray-700 leading-relaxed">Amazing quality and great value for money. The item exceeded my expectations. Host was professional and accommodating with timing.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-4">
+                        <img src="https://ui-avatars.com/api/?name=Alex+Brown&background=random" class="w-12 h-12 rounded-full flex-shrink-0">
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between mb-2">
+                                <div>
+                                    <p class="font-bold text-slate-900">Alex Brown</p>
+                                    <p class="text-sm text-gray-500">November 2023</p>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <i class="fa-solid fa-star text-yellow-500 text-sm"></i>
+                                    <span class="font-bold text-sm">5.0</span>
+                                </div>
+                            </div>
+                            <p class="text-gray-700 leading-relaxed">Highly recommended! The rental process was seamless from start to finish. Item was in pristine condition and exactly what I needed for my project.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Global State
         const subCategories = {
-            products: [{name:'All'}, {name:'Vehicles'}, {name:'Cameras'}, {name:'Furniture'}, {name:'Electronics'}, {name:'Fashion'}, {name:'Books'}, {name:'Camping'}, {name:'Tools'}],
-            services: [{name:'All'}, {name:'Developers'}, {name:'Chefs'}, {name:'Trainers'}, {name:'Cleaners'}, {name:'Tutors'}, {name:'Designers'}, {name:'Movers'}],
-            spaces: [{name:'All'}, {name:'Villas'}, {name:'Apartments'}, {name:'Offices'}, {name:'Studios'}, {name:'Gardens'}, {name:'Halls'}]
+            products: [{name:'All'}, {name:'Cameras'}, {name:'Electronics'}, {name:'Vehicles'}, {name:'Furniture'}, {name:'Sports'}, {name:'Music'}, {name:'Fashion'}, {name:'Tools'}],
+            services: [{name:'All'}, {name:'Tech'}, {name:'Home'}, {name:'Personal'}, {name:'Events'}],
+            spaces: [{name:'All'}, {name:'Vacation'}, {name:'Apartments'}, {name:'Offices'}, {name:'Halls'}, {name:'Studios'}]
         };
 
         let cart = [];
@@ -730,12 +1100,24 @@
         function openDetails(item) {
             currentItem = item;
             
-            // Populate all images (main + 4 thumbnails)
-            document.getElementById('detail-img-main').src = item.img;
-            document.getElementById('detail-img-1').src = item.img;
-            document.getElementById('detail-img-2').src = item.img;
-            document.getElementById('detail-img-3').src = item.img;
-            document.getElementById('detail-img-4').src = item.img;
+            // Populate images - use multiple if available, otherwise same image
+            if (item.images && item.images.length > 0) {
+                // Use uploaded images
+                document.getElementById('detail-img-main').src = item.images[0];
+                for (let i = 1; i <= 4; i++) {
+                    const imgEl = document.getElementById(`detail-img-${i}`);
+                    if (imgEl) {
+                        imgEl.src = item.images[i] || item.images[0]; // Fallback to first image
+                    }
+                }
+            } else {
+                // Fallback: use single image for all
+                document.getElementById('detail-img-main').src = item.img;
+                document.getElementById('detail-img-1').src = item.img;
+                document.getElementById('detail-img-2').src = item.img;
+                document.getElementById('detail-img-3').src = item.img;
+                document.getElementById('detail-img-4').src = item.img;
+            }
             
             // Basic info
             document.getElementById('detail-title').innerText = item.title;
@@ -772,6 +1154,45 @@
                 }
             }
 
+            // Initialize date pickers with min date as today
+            const today = new Date().toISOString().split('T')[0];
+            const detailStartDate = document.getElementById('detail-start-date');
+            const detailEndDate = document.getElementById('detail-end-date');
+            
+            if (detailStartDate && detailEndDate) {
+                detailStartDate.min = today;
+                detailEndDate.min = today;
+                detailStartDate.value = ''; // Clear previous values
+                detailEndDate.value = '';
+                
+                // Reset price breakdown
+                document.getElementById('detail-price-breakdown').innerText = 'Select dates';
+                document.getElementById('detail-rental-amount').innerText = '₹0';
+                document.getElementById('detail-total-amount').innerText = '₹60';
+                
+                // Update end date min when start date changes
+                detailStartDate.addEventListener('change', function() {
+                    if (this.value) {
+                        detailEndDate.min = this.value;
+                        // Clear end date if it's before new start date
+                        if (detailEndDate.value && detailEndDate.value < this.value) {
+                            detailEndDate.value = '';
+                        }
+                    }
+                    calculateDetailPrice();
+                });
+                
+                detailEndDate.addEventListener('change', function() {
+                    calculateDetailPrice();
+                });
+            }
+
+            // Category-specific features
+            populateCategoryFeatures(currentCategory);
+
+            // Load reviews for this item
+            loadReviews();
+
             // Update wishlist button state
             const btn = document.getElementById('wishlist-btn');
             const icon = btn.querySelector('i');
@@ -788,6 +1209,53 @@
             document.getElementById('home-view').classList.add('hidden');
             document.getElementById('product-details-view').classList.remove('hidden');
             window.scrollTo(0,0);
+        }
+
+        // Populate category-specific features
+        function populateCategoryFeatures(category) {
+            const featuresGrid = document.getElementById('features-grid');
+            const featuresTitle = document.getElementById('features-title');
+            
+            let features = [];
+            
+            if (category === 'products') {
+                featuresTitle.innerText = "What's included";
+                features = [
+                    { icon: 'fa-box-open', text: 'Excellent condition' },
+                    { icon: 'fa-check-circle', text: 'Ready to use' },
+                    { icon: 'fa-truck', text: 'Delivery available' },
+                    { icon: 'fa-shield-check', text: 'Damage protection' },
+                    { icon: 'fa-clock', text: 'Flexible pickup' },
+                    { icon: 'fa-headset', text: '24/7 support' }
+                ];
+            } else if (category === 'services') {
+                featuresTitle.innerText = "Service includes";
+                features = [
+                    { icon: 'fa-user-check', text: 'Verified professional' },
+                    { icon: 'fa-certificate', text: 'Certified & experienced' },
+                    { icon: 'fa-calendar-check', text: 'Flexible scheduling' },
+                    { icon: 'fa-comments', text: 'Direct communication' },
+                    { icon: 'fa-star', text: 'Highly rated' },
+                    { icon: 'fa-shield-halved', text: 'Satisfaction guaranteed' }
+                ];
+            } else if (category === 'spaces') {
+                featuresTitle.innerText = "Amenities";
+                features = [
+                    { icon: 'fa-wifi', text: 'Free WiFi' },
+                    { icon: 'fa-parking', text: 'Parking available' },
+                    { icon: 'fa-snowflake', text: 'Air conditioning' },
+                    { icon: 'fa-utensils', text: 'Kitchen facilities' },
+                    { icon: 'fa-tv', text: 'Entertainment' },
+                    { icon: 'fa-lock', text: 'Secure access' }
+                ];
+            }
+            
+            featuresGrid.innerHTML = features.map(f => `
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid ${f.icon} text-emerald-600 text-xl"></i>
+                    <span class="text-gray-700">${f.text}</span>
+                </div>
+            `).join('');
         }
 
         // Go back to home view
@@ -955,6 +1423,30 @@
             updateWishlist();
         }
 
+        // Sort dropdown toggle
+        function toggleSortDropdown() {
+            const dropdown = document.getElementById('sort-dropdown');
+            dropdown.classList.toggle('hidden');
+            
+            // Close dropdown when clicking outside
+            if (!dropdown.classList.contains('hidden')) {
+                setTimeout(() => {
+                    document.addEventListener('click', function closeDropdown(e) {
+                        if (!e.target.closest('#sort-dropdown') && !e.target.closest('button[onclick="toggleSortDropdown()"]')) {
+                            dropdown.classList.add('hidden');
+                            document.removeEventListener('click', closeDropdown);
+                        }
+                    });
+                }, 100);
+            }
+        }
+
+        function selectSort(order, label) {
+            document.getElementById('sort-label').innerText = label;
+            document.getElementById('sort-dropdown').classList.add('hidden');
+            sortListings(order);
+        }
+
         // Sort listings
         async function sortListings(order) {
             document.getElementById('listings-grid').innerHTML = '<div class="col-span-full text-center py-12"><i class="fa-solid fa-spinner fa-spin text-3xl text-primary"></i></div>';
@@ -1050,55 +1542,63 @@
                 const filtered = currentListings.filter(item => {
                     const title = item.title.toLowerCase();
                     const sub = subcategory.toLowerCase();
+                    const category = item.category ? item.category.toLowerCase() : '';
                     
-                    // Match based on keywords
-                    if(sub.includes('vehicle') || sub.includes('bike') || sub.includes('car')) {
-                        return title.includes('enfield') || title.includes('ktm') || title.includes('activa') || title.includes('swift') || title.includes('bike') || title.includes('car');
-                    }
+                    // PRODUCTS - Match by category field
                     if(sub.includes('camera')) {
-                        return title.includes('canon') || title.includes('sony') || title.includes('gopro') || title.includes('dji') || title.includes('camera');
-                    }
-                    if(sub.includes('furniture')) {
-                        return title.includes('sofa') || title.includes('bed') || title.includes('table') || title.includes('chair');
+                        return category === 'cameras';
                     }
                     if(sub.includes('electronics') || sub.includes('electronic')) {
-                        return title.includes('ps5') || title.includes('macbook') || title.includes('ipad') || title.includes('gaming') || title.includes('laptop') || title.includes('pc');
+                        return category === 'electronics';
                     }
-                    if(sub.includes('camping')) {
-                        return title.includes('tent') || title.includes('backpack') || title.includes('sleeping') || title.includes('camping') || title.includes('trek');
+                    if(sub.includes('vehicle') || sub.includes('bike') || sub.includes('car')) {
+                        return category === 'vehicles';
                     }
-                    if(sub.includes('book')) {
-                        return title.includes('harry') || title.includes('ncert') || title.includes('book') || title.includes('novel');
+                    if(sub.includes('furniture')) {
+                        return category === 'furniture';
                     }
-                    if(sub.includes('developer') || sub.includes('dev')) {
-                        return title.includes('python') || title.includes('web') || title.includes('app') || title.includes('developer') || title.includes('analyst');
+                    if(sub.includes('sport')) {
+                        return category === 'sports';
                     }
-                    if(sub.includes('clean')) {
-                        return title.includes('clean') || title.includes('plumber') || title.includes('electrician') || title.includes('carpenter');
+                    if(sub.includes('music')) {
+                        return category === 'music';
                     }
-                    if(sub.includes('trainer') || sub.includes('tutor') || sub.includes('teacher')) {
-                        return title.includes('yoga') || title.includes('trainer') || title.includes('tutor') || title.includes('teacher') || title.includes('guitar') || title.includes('math');
+                    if(sub.includes('fashion')) {
+                        return category === 'fashion';
                     }
-                    if(sub.includes('event') || sub.includes('wedding') || sub.includes('photographer')) {
-                        return title.includes('wedding') || title.includes('photographer') || title.includes('dj') || title.includes('catering');
+                    if(sub.includes('tool')) {
+                        return category === 'tools';
                     }
-                    if(sub.includes('mover') || sub.includes('packer')) {
-                        return title.includes('packer') || title.includes('mover') || title.includes('transport');
+                    
+                    // SERVICES - Match by category field
+                    if(sub.includes('tech')) {
+                        return category === 'tech';
                     }
-                    if(sub.includes('villa') || sub.includes('vacation')) {
-                        return title.includes('villa') || title.includes('cottage') || title.includes('palace') || title.includes('houseboat') || title.includes('goa') || title.includes('manali');
+                    if(sub.includes('home')) {
+                        return category === 'home';
                     }
-                    if(sub.includes('apartment') || sub.includes('studio')) {
-                        return title.includes('studio') || title.includes('bhk') || title.includes('apartment') || title.includes('penthouse');
+                    if(sub.includes('personal')) {
+                        return category === 'personal';
                     }
-                    if(sub.includes('office') || sub.includes('coworking')) {
-                        return title.includes('office') || title.includes('coworking') || title.includes('meeting');
+                    if(sub.includes('event')) {
+                        return category === 'events';
                     }
-                    if(sub.includes('hall') || sub.includes('venue') || sub.includes('garden')) {
-                        return title.includes('banquet') || title.includes('garden') || title.includes('rooftop') || title.includes('conference') || title.includes('hall');
+                    
+                    // SPACES - Match by category field
+                    if(sub.includes('vacation')) {
+                        return category === 'vacation';
+                    }
+                    if(sub.includes('apartment')) {
+                        return category === 'apartments';
+                    }
+                    if(sub.includes('office')) {
+                        return category === 'offices';
+                    }
+                    if(sub.includes('hall')) {
+                        return category === 'halls';
                     }
                     if(sub.includes('studio') && currentCategory === 'spaces') {
-                        return title.includes('photography') || title.includes('recording') || title.includes('studio');
+                        return category === 'studios';
                     }
                     
                     return true;
@@ -1124,12 +1624,227 @@
             }, 1000);
         }
 
+        // Search functionality
+        async function performSearch() {
+            const searchQuery = document.getElementById('search-input').value.trim();
+            const pincode = document.getElementById('search-pincode').value.trim();
+            
+            if (!searchQuery && !pincode) {
+                showToast('Please enter a search term or pincode');
+                return;
+            }
+            
+            // Show loading
+            document.getElementById('listings-grid').innerHTML = '<div class="col-span-full text-center py-12"><i class="fa-solid fa-spinner fa-spin text-3xl text-primary"></i><p class="mt-4 text-gray-500">Searching...</p></div>';
+            
+            try {
+                let results = [];
+                
+                // Search across all categories
+                const categories = ['products', 'services', 'spaces'];
+                
+                for (const category of categories) {
+                    const response = await fetch(`/api/listings?category=${category}`);
+                    const data = await response.json();
+                    
+                    // Filter by search query
+                    let filtered = data;
+                    
+                    if (searchQuery) {
+                        filtered = filtered.filter(item => {
+                            const title = item.title.toLowerCase();
+                            const desc = (item.description || '').toLowerCase();
+                            const query = searchQuery.toLowerCase();
+                            return title.includes(query) || desc.includes(query);
+                        });
+                    }
+                    
+                    // Filter by pincode if provided
+                    if (pincode) {
+                        filtered = filtered.filter(item => item.pincode === pincode);
+                    }
+                    
+                    results = results.concat(filtered);
+                }
+                
+                // Update section title
+                document.getElementById('section-title').innerText = searchQuery ? 
+                    `Search results for "${searchQuery}"` : 
+                    `Results in ${pincode}`;
+                
+                // Render results
+                if (results.length === 0) {
+                    document.getElementById('listings-grid').innerHTML = `
+                        <div class="col-span-full text-center py-12">
+                            <i class="fa-solid fa-magnifying-glass text-6xl text-gray-300 mb-4"></i>
+                            <h3 class="text-xl font-bold text-slate-900 mb-2">No results found</h3>
+                            <p class="text-gray-500">Try different keywords or check your pincode</p>
+                        </div>
+                    `;
+                } else {
+                    currentListings = results;
+                    renderListings(results);
+                    showToast(`Found ${results.length} results`);
+                }
+                
+            } catch (error) {
+                console.error('Search error:', error);
+                showToast('Search failed. Please try again.');
+                document.getElementById('listings-grid').innerHTML = '<div class="col-span-full text-center py-12 text-red-500"><i class="fa-solid fa-exclamation-triangle text-3xl mb-4"></i><p>Error loading results</p></div>';
+            }
+        }
+
         // Toast notification
         function showToast(msg) {
             const t = document.getElementById('toast');
             document.getElementById('toast-msg').innerText = msg;
             t.classList.remove('translate-y-20', 'opacity-0');
             setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 3000);
+        }
+
+        // Review System
+        let selectedRating = 0;
+
+        function openReviewModal() {
+            const user = getCurrentUser();
+            if (!user) {
+                showToast('Please login to write a review');
+                openLoginModal();
+                return;
+            }
+            document.getElementById('review-modal').classList.remove('hidden');
+            selectedRating = 0;
+            document.querySelectorAll('.rating-star').forEach(star => {
+                star.classList.remove('text-yellow-500');
+                star.classList.add('text-gray-300');
+            });
+        }
+
+        function closeReviewModal() {
+            document.getElementById('review-modal').classList.add('hidden');
+            document.getElementById('review-comment').value = '';
+            selectedRating = 0;
+        }
+
+        function setRating(rating) {
+            selectedRating = rating;
+            document.getElementById('review-rating').value = rating;
+            
+            document.querySelectorAll('.rating-star').forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.remove('text-gray-300');
+                    star.classList.add('text-yellow-500');
+                } else {
+                    star.classList.remove('text-yellow-500');
+                    star.classList.add('text-gray-300');
+                }
+            });
+        }
+
+        function submitReview(event) {
+            event.preventDefault();
+            
+            const user = getCurrentUser();
+            if (!user) {
+                showToast('Please login first');
+                return;
+            }
+
+            if (selectedRating === 0) {
+                showToast('Please select a rating');
+                return;
+            }
+
+            const comment = document.getElementById('review-comment').value.trim();
+            if (!comment) {
+                showToast('Please write a review');
+                return;
+            }
+
+            // Create review object
+            const review = {
+                itemTitle: currentItem.title,
+                userName: user.name,
+                userEmail: user.email,
+                rating: selectedRating,
+                comment: comment,
+                date: new Date().toISOString(),
+                timestamp: Date.now()
+            };
+
+            // Get existing reviews
+            let reviews = JSON.parse(localStorage.getItem('rentit_reviews') || '[]');
+            reviews.unshift(review); // Add to beginning
+            localStorage.setItem('rentit_reviews', JSON.stringify(reviews));
+
+            closeReviewModal();
+            showToast('Review submitted successfully! ⭐');
+            
+            // Reload reviews
+            loadReviews();
+        }
+
+        function loadReviews() {
+            if (!currentItem) return;
+
+            const allReviews = JSON.parse(localStorage.getItem('rentit_reviews') || '[]');
+            const itemReviews = allReviews.filter(r => r.itemTitle === currentItem.title);
+            
+            const reviewsList = document.getElementById('reviews-list');
+            const reviewCount = document.getElementById('review-count');
+            const showAllBtn = document.getElementById('show-all-reviews-btn');
+
+            reviewCount.innerText = itemReviews.length;
+
+            if (itemReviews.length === 0) {
+                reviewsList.innerHTML = `
+                    <div class="text-center py-8 text-gray-500">
+                        <i class="fa-solid fa-comment-slash text-4xl mb-3 opacity-20"></i>
+                        <p>No reviews yet. Be the first to review!</p>
+                    </div>
+                `;
+                showAllBtn.classList.add('hidden');
+                return;
+            }
+
+            // Show first 3 reviews
+            const displayReviews = itemReviews.slice(0, 3);
+            
+            reviewsList.innerHTML = displayReviews.map(review => {
+                const date = new Date(review.date);
+                const formattedDate = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                
+                return `
+                    <div class="flex gap-4">
+                        <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(review.userName)}&background=random" class="w-12 h-12 rounded-full">
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between mb-2">
+                                <div>
+                                    <p class="font-semibold text-slate-900">${review.userName}</p>
+                                    <p class="text-sm text-gray-500">${formattedDate}</p>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    ${Array(review.rating).fill('<i class="fa-solid fa-star text-yellow-500 text-sm"></i>').join('')}
+                                    <span class="font-semibold text-sm ml-1">${review.rating}.0</span>
+                                </div>
+                            </div>
+                            <p class="text-gray-700">${review.comment}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Show "Show all" button if more than 3 reviews
+            if (itemReviews.length > 3) {
+                showAllBtn.classList.remove('hidden');
+                showAllBtn.innerText = `Show all ${itemReviews.length} reviews`;
+            } else {
+                showAllBtn.classList.add('hidden');
+            }
+        }
+
+        function showAllReviews() {
+            alert('Show all reviews feature - coming soon!');
         }
 
         // Modal controls
@@ -1188,6 +1903,44 @@
         // Booking Functions
         let bookingItem = null;
 
+        // Calculate price on detail page
+        function calculateDetailPrice() {
+            const detailStartDate = document.getElementById('detail-start-date');
+            const detailEndDate = document.getElementById('detail-end-date');
+            
+            if (!detailStartDate || !detailEndDate || !detailStartDate.value || !detailEndDate.value) {
+                document.getElementById('detail-price-breakdown').innerText = 'Select dates';
+                document.getElementById('detail-rental-amount').innerText = '₹0';
+                document.getElementById('detail-total-amount').innerText = '₹60';
+                return;
+            }
+            
+            const start = new Date(detailStartDate.value);
+            const end = new Date(detailEndDate.value);
+            const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+            
+            if (days < 1) {
+                document.getElementById('detail-price-breakdown').innerText = 'Select dates';
+                document.getElementById('detail-rental-amount').innerText = '₹0';
+                document.getElementById('detail-total-amount').innerText = '₹60';
+                return;
+            }
+            
+            // Get price from current item
+            const priceStr = currentItem.price.replace(/[₹,]/g, '');
+            const pricePerDay = parseInt(priceStr) || 0;
+            const rentalAmount = pricePerDay * days;
+            const serviceFee = 60;
+            const total = rentalAmount + serviceFee;
+            
+            // Format numbers with commas
+            const formatPrice = (num) => '₹' + num.toLocaleString('en-IN');
+            
+            document.getElementById('detail-price-breakdown').innerText = `${currentItem.price} x ${days} day${days > 1 ? 's' : ''}`;
+            document.getElementById('detail-rental-amount').innerText = formatPrice(rentalAmount);
+            document.getElementById('detail-total-amount').innerText = formatPrice(total);
+        }
+
         function handleRentNow() {
             const user = getCurrentUser();
             
@@ -1200,6 +1953,18 @@
             if (!currentItem) {
                 showToast('Please select an item first');
                 return;
+            }
+            
+            // Get selected dates from detail page
+            const startDate = document.getElementById('detail-start-date').value;
+            const endDate = document.getElementById('detail-end-date').value;
+            
+            // Store dates in localStorage for booking page
+            if (startDate && endDate) {
+                localStorage.setItem('booking_dates', JSON.stringify({
+                    startDate: startDate,
+                    endDate: endDate
+                }));
             }
             
             // Store item in localStorage and redirect to booking page
@@ -1224,6 +1989,126 @@
             // Redirect to booking page with first cart item
             localStorage.setItem('booking_item', JSON.stringify(cart[0]));
             window.location.href = '/booking?item=' + encodeURIComponent(JSON.stringify(cart[0]));
+        }
+
+        // Share Item
+        function shareItem() {
+            if (!currentItem) return;
+            
+            const shareData = {
+                title: currentItem.title,
+                text: `Check out this ${currentItem.title} on Rentit!`,
+                url: window.location.href
+            };
+            
+            if (navigator.share) {
+                navigator.share(shareData).catch(() => {
+                    copyToClipboard(window.location.href);
+                });
+            } else {
+                copyToClipboard(window.location.href);
+            }
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Link copied to clipboard!');
+            }).catch(() => {
+                showToast('Failed to copy link');
+            });
+        }
+
+        // Contact Host
+        function contactHost() {
+            if (!currentItem) return;
+            
+            const user = getCurrentUser();
+            if (!user) {
+                showToast('Please login to contact host');
+                openLoginModal();
+                return;
+            }
+            
+            document.getElementById('contact-host-name').innerText = currentItem.hostName || 'Host';
+            document.getElementById('contact-host-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentItem.hostName || 'Host')}&background=4f46e5&color=fff`;
+            document.getElementById('contact-modal').classList.remove('hidden');
+        }
+
+        function closeContactModal() {
+            document.getElementById('contact-modal').classList.add('hidden');
+            document.getElementById('contact-message').value = '';
+        }
+
+        function sendMessage(event) {
+            event.preventDefault();
+            const message = document.getElementById('contact-message').value;
+            
+            // TODO: Implement actual messaging
+            showToast('Message sent successfully!');
+            closeContactModal();
+        }
+
+        // Image Gallery
+        let galleryImages = [];
+        let currentGalleryIndex = 0;
+
+        function openImageGallery(index) {
+            if (!currentItem) return;
+            
+            // Prepare images array
+            if (currentItem.images && currentItem.images.length > 0) {
+                galleryImages = currentItem.images;
+            } else {
+                galleryImages = [currentItem.img, currentItem.img, currentItem.img, currentItem.img, currentItem.img];
+            }
+            
+            currentGalleryIndex = index;
+            updateGalleryImage();
+            document.getElementById('image-gallery-modal').classList.remove('hidden');
+        }
+
+        function closeImageGallery() {
+            document.getElementById('image-gallery-modal').classList.add('hidden');
+        }
+
+        function nextImage() {
+            currentGalleryIndex = (currentGalleryIndex + 1) % galleryImages.length;
+            updateGalleryImage();
+        }
+
+        function prevImage() {
+            currentGalleryIndex = (currentGalleryIndex - 1 + galleryImages.length) % galleryImages.length;
+            updateGalleryImage();
+        }
+
+        function updateGalleryImage() {
+            document.getElementById('gallery-image').src = galleryImages[currentGalleryIndex];
+            document.getElementById('gallery-counter').innerText = `${currentGalleryIndex + 1} / ${galleryImages.length}`;
+        }
+
+        // Keyboard navigation for gallery
+        document.addEventListener('keydown', function(e) {
+            const modal = document.getElementById('image-gallery-modal');
+            if (!modal.classList.contains('hidden')) {
+                if (e.key === 'ArrowRight') nextImage();
+                if (e.key === 'ArrowLeft') prevImage();
+                if (e.key === 'Escape') closeImageGallery();
+            }
+        });
+
+        // Reviews Modal
+        function showAllReviews() {
+            if (!currentItem) return;
+            
+            // Update rating in modal
+            document.getElementById('reviews-rating').innerText = currentItem.rating || '4.9';
+            
+            // Show modal
+            document.getElementById('reviews-modal').classList.remove('hidden');
+        }
+
+        function closeReviewsModal() {
+            document.getElementById('reviews-modal').classList.add('hidden');
         }
 
     </script>
@@ -1263,10 +2148,10 @@
                 <div>
                     <h3 class="font-bold text-lg mb-4">Company</h3>
                     <ul class="space-y-3">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">About Us</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Careers</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Press</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Blog</a></li>
+                        <li><a href="/about" class="text-gray-400 hover:text-white transition">About Us</a></li>
+                        <li><a href="/contact" class="text-gray-400 hover:text-white transition">Careers</a></li>
+                        <li><a href="/contact" class="text-gray-400 hover:text-white transition">Press</a></li>
+                        <li><a href="/policies" class="text-gray-400 hover:text-white transition">Blog</a></li>
                     </ul>
                 </div>
 
@@ -1274,10 +2159,10 @@
                 <div>
                     <h3 class="font-bold text-lg mb-4">Support</h3>
                     <ul class="space-y-3">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Help Center</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Safety</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Contact Us</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">FAQs</a></li>
+                        <li><a href="/help" class="text-gray-400 hover:text-white transition">Help Center</a></li>
+                        <li><a href="/safety" class="text-gray-400 hover:text-white transition">Safety</a></li>
+                        <li><a href="/contact" class="text-gray-400 hover:text-white transition">Contact Us</a></li>
+                        <li><a href="/faqs" class="text-gray-400 hover:text-white transition">FAQs</a></li>
                     </ul>
                 </div>
 
@@ -1285,10 +2170,10 @@
                 <div>
                     <h3 class="font-bold text-lg mb-4">Legal</h3>
                     <ul class="space-y-3">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Terms of Service</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Privacy Policy</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Cookie Policy</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Sitemap</a></li>
+                        <li><a href="/policies#terms" class="text-gray-400 hover:text-white transition">Terms of Service</a></li>
+                        <li><a href="/policies#privacy" class="text-gray-400 hover:text-white transition">Privacy Policy</a></li>
+                        <li><a href="/policies#cancellation" class="text-gray-400 hover:text-white transition">Cancellation Policy</a></li>
+                        <li><a href="/policies" class="text-gray-400 hover:text-white transition">All Policies</a></li>
                     </ul>
                 </div>
             </div>
@@ -1307,5 +2192,28 @@
 
     <!-- Firebase Authentication -->
     <script src="/static/js/firebase-auth.js"></script>
+    
+    <script>
+        // Cinematic Splash Screen Logic
+        window.addEventListener('DOMContentLoaded', function() {
+            const brandContainer = document.getElementById('brand-container');
+            const splash = document.getElementById('splash-screen');
+            
+            // Show text after logo appears
+            setTimeout(() => {
+                brandContainer.classList.add('show-text');
+            }, 700);
+            
+            // Fade out splash screen
+            setTimeout(() => {
+                splash.classList.add('fade-out');
+            }, 2800);
+            
+            // Remove from DOM after animation
+            setTimeout(() => {
+                splash.style.display = 'none';
+            }, 4000);
+        });
+    </script>
 </body>
 </html>

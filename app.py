@@ -9,6 +9,10 @@ from data import MOCK_LISTINGS
 
 app = Flask(__name__)
 
+# Disable caching for development
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+
 # --- Firebase Initialization ---
 db = None
 USE_FIREBASE = False
@@ -88,6 +92,10 @@ def calculate_pincode_distance(pincode1, pincode2):
 def home():
     return render_template('index.html')
 
+@app.route('/catalog')
+def catalog():
+    return render_template('catalog.html')
+
 @app.route('/list-item')
 def list_item():
     return render_template('list_item.html')
@@ -103,6 +111,178 @@ def booking():
 @app.route('/booking-confirmation')
 def booking_confirmation():
     return render_template('booking_confirmation.html')
+
+@app.route('/profile')
+def profile():
+    return render_template('profile.html')
+
+@app.route('/my-bookings')
+def my_bookings():
+    return render_template('my_bookings.html')
+
+@app.route('/settings')
+def settings():
+    return render_template('settings.html')
+
+@app.route('/policies')
+def policies():
+    return render_template('policies.html')
+
+@app.route('/about')
+def about():
+    content = """
+        <h2 class="text-2xl font-bold mb-4">Welcome to RentIt</h2>
+        <p class="mb-4">RentIt is India's leading peer-to-peer rental marketplace, connecting people who want to rent items with those who have items to share.</p>
+        
+        <h3 class="text-xl font-bold mb-3 mt-6">Our Mission</h3>
+        <p class="mb-4">To make renting easy, affordable, and accessible for everyone. We believe in the sharing economy and sustainable consumption.</p>
+        
+        <h3 class="text-xl font-bold mb-3 mt-6">Why Choose RentIt?</h3>
+        <ul class="list-disc list-inside space-y-2 mb-4">
+            <li>Wide variety of products, services, and spaces</li>
+            <li>Verified users and secure payments</li>
+            <li>Flexible rental periods</li>
+            <li>24/7 customer support</li>
+            <li>Damage protection and insurance</li>
+        </ul>
+        
+        <h3 class="text-xl font-bold mb-3 mt-6">Our Team</h3>
+        <p class="mb-4">Built by passionate developers: Vrudhi Patel, Sibtain Munshi, and Dhruvil Khunt as part of our Full Stack Development project.</p>
+    """
+    return render_template('info_page.html', title='About Us', icon='fa-building', content=content)
+
+@app.route('/help')
+def help_center():
+    content = """
+        <h2 class="text-2xl font-bold mb-4">How Can We Help You?</h2>
+        
+        <h3 class="text-xl font-bold mb-3 mt-6">Getting Started</h3>
+        <ul class="list-disc list-inside space-y-2 mb-4">
+            <li><strong>Sign Up:</strong> Create an account using email or Google</li>
+            <li><strong>Browse Items:</strong> Explore products, services, and spaces</li>
+            <li><strong>Book:</strong> Select dates and complete payment</li>
+            <li><strong>Enjoy:</strong> Pick up or receive your rental</li>
+        </ul>
+        
+        <h3 class="text-xl font-bold mb-3 mt-6">Common Questions</h3>
+        <div class="space-y-4">
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <p class="font-bold mb-2">How do I book an item?</p>
+                <p>Click on any item, select your dates, and click "Reserve". Complete the payment to confirm your booking.</p>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <p class="font-bold mb-2">When will I get my security deposit back?</p>
+                <p>Security deposits are refunded within 3-5 business days after you return the item in good condition.</p>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <p class="font-bold mb-2">Can I cancel my booking?</p>
+                <p>Yes! Free cancellation up to 24 hours before rental start. See our Cancellation Policy for details.</p>
+            </div>
+        </div>
+    """
+    return render_template('info_page.html', title='Help Center', icon='fa-circle-question', content=content)
+
+@app.route('/contact')
+def contact():
+    content = """
+        <h2 class="text-2xl font-bold mb-4">Get in Touch</h2>
+        <p class="mb-6">We're here to help! Reach out to us through any of these channels:</p>
+        
+        <div class="space-y-4">
+            <div class="flex items-center gap-4 p-4 bg-blue-50 rounded-lg">
+                <i class="fa-solid fa-envelope text-3xl text-blue-600"></i>
+                <div>
+                    <p class="font-bold text-slate-900">Email</p>
+                    <a href="mailto:support@rentit.com" class="text-blue-600 hover:underline">support@rentit.com</a>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4 p-4 bg-green-50 rounded-lg">
+                <i class="fa-solid fa-phone text-3xl text-green-600"></i>
+                <div>
+                    <p class="font-bold text-slate-900">Phone</p>
+                    <a href="tel:+911234567890" class="text-green-600 hover:underline">+91 123-456-7890</a>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4 p-4 bg-purple-50 rounded-lg">
+                <i class="fa-solid fa-clock text-3xl text-purple-600"></i>
+                <div>
+                    <p class="font-bold text-slate-900">Support Hours</p>
+                    <p class="text-gray-700">24/7 - We're always here for you!</p>
+                </div>
+            </div>
+        </div>
+        
+        <h3 class="text-xl font-bold mb-3 mt-8">Office Address</h3>
+        <p class="text-gray-700">RentIt Technologies Pvt. Ltd.<br>
+        123 Tech Park, Bangalore<br>
+        Karnataka, India - 560001</p>
+    """
+    return render_template('info_page.html', title='Contact Us', icon='fa-headset', content=content)
+
+@app.route('/safety')
+def safety():
+    content = """
+        <h2 class="text-2xl font-bold mb-4">Your Safety is Our Priority</h2>
+        
+        <h3 class="text-xl font-bold mb-3 mt-6">User Verification</h3>
+        <ul class="list-disc list-inside space-y-2 mb-4">
+            <li>Email and phone verification required</li>
+            <li>Government ID verification for high-value items</li>
+            <li>User ratings and reviews system</li>
+        </ul>
+        
+        <h3 class="text-xl font-bold mb-3 mt-6">Secure Payments</h3>
+        <ul class="list-disc list-inside space-y-2 mb-4">
+            <li>All payments processed through secure gateways</li>
+            <li>SSL encryption for data protection</li>
+            <li>Security deposits held in escrow</li>
+        </ul>
+        
+        <h3 class="text-xl font-bold mb-3 mt-6">Safety Tips</h3>
+        <ul class="list-disc list-inside space-y-2 mb-4">
+            <li>Always communicate through RentIt platform</li>
+            <li>Inspect items before accepting</li>
+            <li>Report suspicious activity immediately</li>
+            <li>Never share personal financial information</li>
+        </ul>
+    """
+    return render_template('info_page.html', title='Safety Guidelines', icon='fa-shield-halved', content=content)
+
+@app.route('/faqs')
+def faqs():
+    content = """
+        <h2 class="text-2xl font-bold mb-4">Frequently Asked Questions</h2>
+        
+        <div class="space-y-4">
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <p class="font-bold mb-2">What is RentIt?</p>
+                <p>RentIt is a peer-to-peer rental marketplace where you can rent products, book services, or reserve spaces.</p>
+            </div>
+            
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <p class="font-bold mb-2">How does pricing work?</p>
+                <p>Prices are set by item owners. You pay rental amount + ₹60 service fee + ₹500 refundable security deposit.</p>
+            </div>
+            
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <p class="font-bold mb-2">What if an item is damaged?</p>
+                <p>Minor wear is expected. Significant damage will be deducted from your security deposit.</p>
+            </div>
+            
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <p class="font-bold mb-2">Can I list my own items?</p>
+                <p>Yes! Click "List Your Item" to start earning by renting out your belongings.</p>
+            </div>
+            
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <p class="font-bold mb-2">Is delivery available?</p>
+                <p>Delivery options vary by item and location. Check item details for availability.</p>
+            </div>
+        </div>
+    """
+    return render_template('info_page.html', title='FAQs', icon='fa-circle-question', content=content)
 
 @app.route('/api/listings', methods=['GET'])
 def get_listings():
