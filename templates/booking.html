@@ -401,7 +401,7 @@
             }, 3000);
         }
 
-        // Form submission
+        // Form submission - Show payment modal instead of direct booking
         document.getElementById('booking-form').addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -435,16 +435,17 @@
                 showError('Minimum rental period is 1 day');
                 return;
             }
-            
-            // Calculate final amounts
+
+            // Calculate amounts
             const priceStr = itemData.price?.replace(/[₹,]/g, '') || '0';
             const basePrice = parseInt(priceStr);
             const rentalTotal = basePrice * days;
             const serviceFee = 60;
             const deposit = 500;
             const total = rentalTotal + serviceFee + deposit;
-            
-            const booking = {
+
+            // Store temporary booking data
+            const tempBooking = {
                 itemName: itemData.title,
                 itemImage: itemData.img,
                 itemPrice: itemData.price,
@@ -454,24 +455,18 @@
                 rentalAmount: rentalTotal,
                 serviceFee: serviceFee,
                 deposit: deposit,
-                totalAmount: `₹${total}`,
+                total: total,
                 fullName: document.getElementById('full-name').value,
                 email: document.getElementById('email').value,
                 phone: document.getElementById('phone').value,
                 address: `${document.getElementById('address-line1').value}, ${document.getElementById('city').value}, ${document.getElementById('state').value} - ${document.getElementById('pincode').value}`,
-                notes: document.getElementById('notes').value,
-                bookingId: 'BK' + Date.now(),
-                status: 'Confirmed',
-                createdAt: new Date().toISOString()
+                notes: document.getElementById('notes').value
             };
-            
-            // Store booking
-            const bookings = JSON.parse(localStorage.getItem('rentit_bookings') || '[]');
-            bookings.push(booking);
-            localStorage.setItem('rentit_bookings', JSON.stringify(bookings));
-            
-            // Redirect to confirmation page
-            window.location.href = `/booking-confirmation?id=${booking.bookingId}`;
+
+            localStorage.setItem('temp_booking', JSON.stringify(tempBooking));
+
+            // Redirect to payment page
+            window.location.href = '/payment';
         });
     </script>
 </body>

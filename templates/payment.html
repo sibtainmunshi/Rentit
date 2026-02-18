@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - RentIt</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4f46e5',
+                        primaryDark: '#4338ca',
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-sans bg-gray-50">
+    <!-- Navbar -->
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="/" class="flex items-center gap-2.5">
+                    <div class="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center">
+                        <i class="fa-solid fa-cube text-white text-lg"></i>
+                    </div>
+                    <span class="text-2xl font-bold text-slate-900">Rentit</span>
+                </a>
+                <div class="flex items-center gap-4">
+                    <i class="fa-solid fa-shield-halved text-green-600"></i>
+                    <span class="text-sm font-medium text-gray-600">100% Secure Payment</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left: Payment Options -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-6">Choose Payment Method</h2>
+
+                    <!-- UPI -->
+                    <div class="mb-6">
+                        <button onclick="toggleSection('upi')" class="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center border border-gray-200">
+                                    <i class="fa-solid fa-mobile-screen text-purple-600 text-xl"></i>
+                                </div>
+                                <span class="font-bold text-slate-900">UPI</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-down text-gray-400" id="upi-icon"></i>
+                        </button>
+                        <div id="upi-section" class="hidden mt-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
+                            <div class="space-y-3">
+                                <label class="flex items-center gap-3 p-4 bg-white border-2 border-gray-200 rounded-lg hover:border-primary cursor-pointer transition">
+                                    <input type="radio" name="payment" value="googlepay" class="w-5 h-5 text-primary">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 flex items-center justify-center">
+                                            <svg viewBox="0 0 122.88 122.88" class="w-10 h-10">
+                                                <path fill="#4285F4" d="M93.78 29.1H29.1v64.68h64.68V29.1z"/>
+                                                <path fill="#34A853" d="M93.78 29.1v64.68h29.1V29.1h-29.1z"/>
+                                                <path fill="#FBBC04" d="M29.1 93.78H0v29.1h29.1v-29.1z"/>
+                                                <path fill="#EA4335" d="M29.1 0H0v29.1h29.1V0z"/>
+                                            </svg>
+                                        </div>
+                                        <span class="font-semibold text-slate-900">Google Pay</span>
+                                    </div>
+                                </label>
+                                <label class="flex items-center gap-3 p-4 bg-white border-2 border-gray-200 rounded-lg hover:border-primary cursor-pointer transition">
+                                    <input type="radio" name="payment" value="phonepe" class="w-5 h-5 text-primary">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-purple-600 to-purple-800 rounded-lg flex items-center justify-center shadow-md">
+                                            <span class="text-white font-black text-xs">PhonePe</span>
+                                        </div>
+                                        <span class="font-semibold text-slate-900">PhonePe</span>
+                                    </div>
+                                </label>
+                                <label class="flex items-center gap-3 p-4 bg-white border-2 border-gray-200 rounded-lg hover:border-primary cursor-pointer transition">
+                                    <input type="radio" name="payment" value="paytm" class="w-5 h-5 text-primary">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center shadow-md">
+                                            <span class="text-white font-black text-xs">Paytm</span>
+                                        </div>
+                                        <span class="font-semibold text-slate-900">Paytm UPI</span>
+                                    </div>
+                                </label>
+                                <div class="mt-4 pt-4 border-t border-gray-200">
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">Enter UPI ID</label>
+                                    <input type="text" placeholder="example@upi" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none">
+                                    <p class="text-xs text-gray-500 mt-2">You will receive a payment request on your UPI app</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Credit/Debit Card -->
+                    <div class="mb-6">
+                        <button onclick="toggleSection('card')" class="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center border border-gray-200">
+                                    <i class="fa-solid fa-credit-card text-blue-600 text-xl"></i>
+                                </div>
+                                <span class="font-bold text-slate-900">Credit / Debit Card</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-down text-gray-400" id="card-icon"></i>
+                        </button>
+                        <div id="card-section" class="hidden mt-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
+                            <div class="flex gap-4 mb-6 p-3 bg-white rounded-lg border border-gray-200 justify-center">
+                                <div class="px-3 py-2 bg-blue-600 rounded flex items-center justify-center">
+                                    <span class="text-white font-bold text-sm">VISA</span>
+                                </div>
+                                <div class="px-3 py-2 flex items-center justify-center">
+                                    <div class="flex items-center">
+                                        <div class="w-6 h-6 bg-red-500 rounded-full opacity-90"></div>
+                                        <div class="w-6 h-6 bg-orange-500 rounded-full -ml-3 opacity-90"></div>
+                                    </div>
+                                </div>
+                                <div class="px-3 py-2 bg-gradient-to-r from-green-600 to-orange-500 rounded flex items-center justify-center">
+                                    <span class="text-white font-bold text-sm">RuPay</span>
+                                </div>
+                                <div class="px-3 py-2 bg-blue-500 rounded flex items-center justify-center">
+                                    <span class="text-white font-bold text-xs">AMEX</span>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">Card Number</label>
+                                    <input type="text" placeholder="1234 5678 9012 3456" maxlength="19" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">Cardholder Name</label>
+                                    <input type="text" placeholder="Name on card" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none">
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-bold text-gray-700 mb-2">Expiry Date</label>
+                                        <input type="text" placeholder="MM/YY" maxlength="5" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-bold text-gray-700 mb-2">CVV</label>
+                                        <input type="password" placeholder="123" maxlength="3" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none">
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2 text-xs text-gray-600 bg-blue-50 p-3 rounded-lg">
+                                    <i class="fa-solid fa-info-circle text-blue-600"></i>
+                                    <span>Your card details are encrypted and secure</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Net Banking -->
+                    <div class="mb-6">
+                        <button onclick="toggleSection('netbanking')" class="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center border border-gray-200">
+                                    <i class="fa-solid fa-building-columns text-green-600 text-xl"></i>
+                                </div>
+                                <span class="font-bold text-slate-900">Net Banking</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-down text-gray-400" id="netbanking-icon"></i>
+                        </button>
+                        <div id="netbanking-section" class="hidden mt-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
+                            <p class="text-sm text-gray-600 mb-4">Select your bank to proceed with net banking</p>
+                            <div class="grid grid-cols-2 gap-3">
+                                <label class="flex items-center gap-3 p-4 bg-white border-2 border-gray-200 rounded-lg hover:border-primary cursor-pointer transition">
+                                    <input type="radio" name="payment" value="sbi" class="w-5 h-5 text-primary">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-10 h-10 bg-blue-700 rounded-lg flex items-center justify-center shadow">
+                                            <span class="text-white font-bold text-xs">SBI</span>
+                                        </div>
+                                        <span class="font-semibold text-sm">State Bank</span>
+                                    </div>
+                                </label>
+                                <label class="flex items-center gap-3 p-4 bg-white border-2 border-gray-200 rounded-lg hover:border-primary cursor-pointer transition">
+                                    <input type="radio" name="payment" value="hdfc" class="w-5 h-5 text-primary">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-10 h-10 bg-blue-900 rounded-lg flex items-center justify-center shadow">
+                                            <span class="text-white font-bold text-xs">HDFC</span>
+                                        </div>
+                                        <span class="font-semibold text-sm">HDFC Bank</span>
+                                    </div>
+                                </label>
+                                <label class="flex items-center gap-3 p-4 bg-white border-2 border-gray-200 rounded-lg hover:border-primary cursor-pointer transition">
+                                    <input type="radio" name="payment" value="icici" class="w-5 h-5 text-primary">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center shadow">
+                                            <span class="text-white font-bold text-xs">ICICI</span>
+                                        </div>
+                                        <span class="font-semibold text-sm">ICICI Bank</span>
+                                    </div>
+                                </label>
+                                <label class="flex items-center gap-3 p-4 bg-white border-2 border-gray-200 rounded-lg hover:border-primary cursor-pointer transition">
+                                    <input type="radio" name="payment" value="axis" class="w-5 h-5 text-primary">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-10 h-10 bg-red-700 rounded-lg flex items-center justify-center shadow">
+                                            <span class="text-white font-bold text-xs">AXIS</span>
+                                        </div>
+                                        <span class="font-semibold text-sm">Axis Bank</span>
+                                    </div>
+                                </label>
+                                <label class="flex items-center gap-3 p-4 bg-white border-2 border-gray-200 rounded-lg hover:border-primary cursor-pointer transition">
+                                    <input type="radio" name="payment" value="kotak" class="w-5 h-5 text-primary">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center shadow">
+                                            <span class="text-white font-bold text-xs">Kotak</span>
+                                        </div>
+                                        <span class="font-semibold text-sm">Kotak Bank</span>
+                                    </div>
+                                </label>
+                                <label class="flex items-center gap-3 p-4 bg-white border-2 border-gray-200 rounded-lg hover:border-primary cursor-pointer transition">
+                                    <input type="radio" name="payment" value="pnb" class="w-5 h-5 text-primary">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-10 h-10 bg-blue-800 rounded-lg flex items-center justify-center shadow">
+                                            <span class="text-white font-bold text-xs">PNB</span>
+                                        </div>
+                                        <span class="font-semibold text-sm">PNB</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Wallets -->
+                    <div class="mb-6">
+                        <button onclick="toggleSection('wallet')" class="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center border border-gray-200">
+                                    <i class="fa-solid fa-wallet text-orange-600 text-xl"></i>
+                                </div>
+                                <span class="font-bold text-slate-900">Wallets</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-down text-gray-400" id="wallet-icon"></i>
+                        </button>
+                        <div id="wallet-section" class="hidden mt-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
+                            <div class="space-y-3">
+                                <label class="flex items-center gap-3 p-4 bg-white border-2 border-gray-200 rounded-lg hover:border-primary cursor-pointer transition">
+                                    <input type="radio" name="payment" value="paytm-wallet" class="w-5 h-5 text-primary">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center shadow-md">
+                                            <span class="text-white font-black text-xs">Paytm</span>
+                                        </div>
+                                        <span class="font-semibold text-slate-900">Paytm Wallet</span>
+                                    </div>
+                                </label>
+                                <label class="flex items-center gap-3 p-4 bg-white border-2 border-gray-200 rounded-lg hover:border-primary cursor-pointer transition">
+                                    <input type="radio" name="payment" value="amazonpay" class="w-5 h-5 text-primary">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-yellow-500 rounded-lg flex items-center justify-center shadow-md">
+                                            <span class="text-white font-black text-xl">a</span>
+                                        </div>
+                                        <span class="font-semibold text-slate-900">Amazon Pay</span>
+                                    </div>
+                                </label>
+                                <label class="flex items-center gap-3 p-4 bg-white border-2 border-gray-200 rounded-lg hover:border-primary cursor-pointer transition">
+                                    <input type="radio" name="payment" value="mobikwik" class="w-5 h-5 text-primary">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center shadow-md">
+                                            <i class="fa-solid fa-wallet text-white text-lg"></i>
+                                        </div>
+                                        <span class="font-semibold text-slate-900">Mobikwik</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cash on Delivery -->
+                    <div class="mb-6">
+                        <label class="flex items-center justify-between p-4 bg-gradient-to-r from-yellow-50 to-orange-50 hover:from-yellow-100 hover:to-orange-100 border-2 border-yellow-200 rounded-lg cursor-pointer transition">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center border-2 border-yellow-400">
+                                    <i class="fa-solid fa-hand-holding-dollar text-yellow-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-slate-900">Cash on Delivery</p>
+                                    <p class="text-sm text-gray-600">Pay when you receive the item</p>
+                                </div>
+                            </div>
+                            <input type="radio" name="payment" value="cod" class="w-5 h-5 text-primary">
+                        </label>
+                    </div>
+
+                    <!-- Security Info -->
+                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4">
+                        <div class="flex items-start gap-3">
+                            <i class="fa-solid fa-shield-check text-2xl text-green-600 mt-1"></i>
+                            <div>
+                                <p class="font-bold text-slate-900 mb-1">Safe and Secure Payments</p>
+                                <p class="text-sm text-gray-700">All transactions are encrypted with 256-bit SSL security. Your payment information is never stored on our servers.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Order Summary -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden sticky top-24">
+                    <div class="bg-gradient-to-r from-primary to-blue-600 p-4">
+                        <h3 class="text-xl font-bold text-white">Order Summary</h3>
+                    </div>
+                    
+                    <div class="p-6">
+                        <div class="flex gap-4 mb-6 pb-6 border-b border-gray-200">
+                            <img id="item-image" src="" alt="Item" class="w-24 h-24 object-cover rounded-lg border-2 border-gray-200">
+                            <div class="flex-1">
+                                <p class="font-bold text-slate-900 mb-1" id="item-name">Loading...</p>
+                                <p class="text-xs text-gray-600 mb-2" id="item-dates">Loading...</p>
+                                <span class="inline-block px-2 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded">Confirmed</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3 mb-6">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Rental Amount</span>
+                                <span class="font-bold text-slate-900" id="rental-amount">₹0</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Service Fee</span>
+                                <span class="font-bold text-slate-900">₹60</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600 flex items-center gap-1">
+                                    Security Deposit
+                                    <i class="fa-solid fa-info-circle text-xs text-gray-400" title="Refundable"></i>
+                                </span>
+                                <span class="font-bold text-slate-900">₹500</span>
+                            </div>
+                            <div class="border-t-2 border-gray-200 pt-3 flex justify-between items-center">
+                                <span class="font-bold text-lg text-slate-900">Total Amount</span>
+                                <span class="font-bold text-2xl text-primary" id="total-amount">₹0</span>
+                            </div>
+                        </div>
+
+                        <button onclick="processPayment()" class="w-full bg-gradient-to-r from-primary to-blue-600 hover:from-primaryDark hover:to-blue-700 text-white font-bold py-4 rounded-xl transition shadow-lg transform hover:scale-105 flex items-center justify-center gap-2 mb-4">
+                            <i class="fa-solid fa-lock"></i>
+                            Pay Securely
+                        </button>
+
+                        <div class="space-y-2 text-xs text-gray-600">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-check-circle text-green-600"></i>
+                                <span>100% Secure Payment</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-check-circle text-green-600"></i>
+                                <span>Instant Booking Confirmation</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-check-circle text-green-600"></i>
+                                <span>Easy Cancellation</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load booking data
+        const bookingData = JSON.parse(localStorage.getItem('temp_booking') || '{}');
+        
+        if (!bookingData.itemName) {
+            window.location.href = '/';
+        }
+
+        // Populate order summary
+        document.getElementById('item-image').src = bookingData.itemImage || '';
+        document.getElementById('item-name').innerText = bookingData.itemName || '';
+        document.getElementById('item-dates').innerText = `${bookingData.startDate} to ${bookingData.endDate}`;
+        document.getElementById('rental-amount').innerText = `₹${bookingData.rentalAmount?.toLocaleString() || 0}`;
+        document.getElementById('total-amount').innerText = `₹${bookingData.total?.toLocaleString() || 0}`;
+
+        function toggleSection(section) {
+            const sectionEl = document.getElementById(`${section}-section`);
+            const icon = document.getElementById(`${section}-icon`);
+            
+            // Close all sections
+            ['upi', 'card', 'netbanking', 'wallet'].forEach(s => {
+                if (s !== section) {
+                    document.getElementById(`${s}-section`)?.classList.add('hidden');
+                    document.getElementById(`${s}-icon`)?.classList.remove('fa-chevron-up');
+                    document.getElementById(`${s}-icon`)?.classList.add('fa-chevron-down');
+                }
+            });
+            
+            // Toggle current section
+            sectionEl.classList.toggle('hidden');
+            if (sectionEl.classList.contains('hidden')) {
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            } else {
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            }
+        }
+
+        function processPayment() {
+            const selectedPayment = document.querySelector('input[name="payment"]:checked');
+            
+            if (!selectedPayment) {
+                alert('Please select a payment method');
+                return;
+            }
+
+            const paymentMethod = selectedPayment.value;
+            const methodNames = {
+                'googlepay': 'Google Pay',
+                'phonepe': 'PhonePe',
+                'paytm': 'Paytm UPI',
+                'sbi': 'SBI Net Banking',
+                'hdfc': 'HDFC Net Banking',
+                'icici': 'ICICI Net Banking',
+                'axis': 'Axis Net Banking',
+                'kotak': 'Kotak Net Banking',
+                'pnb': 'PNB Net Banking',
+                'paytm-wallet': 'Paytm Wallet',
+                'amazonpay': 'Amazon Pay',
+                'mobikwik': 'Mobikwik',
+                'cod': 'Cash on Delivery'
+            };
+
+            // Hide main content and show processing screen
+            document.querySelector('.max-w-7xl').innerHTML = `
+                <div class="min-h-screen flex items-center justify-center px-4">
+                    <div class="max-w-md w-full">
+                        <!-- Processing Animation -->
+                        <div class="bg-white rounded-2xl shadow-2xl p-8 text-center">
+                            <div class="mb-6">
+                                <div class="w-24 h-24 mx-auto bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center animate-pulse">
+                                    <i class="fa-solid fa-spinner fa-spin text-white text-4xl"></i>
+                                </div>
+                            </div>
+                            
+                            <h2 class="text-2xl font-bold text-slate-900 mb-2">Processing Payment</h2>
+                            <p class="text-gray-600 mb-6">Please wait while we process your ${methodNames[paymentMethod]} payment...</p>
+                            
+                            <div class="space-y-3 text-left bg-gray-50 rounded-xl p-4">
+                                <div class="flex items-center gap-3 text-sm">
+                                    <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                                        <i class="fa-solid fa-check text-white text-xs"></i>
+                                    </div>
+                                    <span class="text-gray-700">Verifying payment details</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-sm">
+                                    <div class="w-6 h-6 bg-primary rounded-full flex items-center justify-center animate-pulse">
+                                        <i class="fa-solid fa-spinner fa-spin text-white text-xs"></i>
+                                    </div>
+                                    <span class="text-gray-700">Connecting to payment gateway</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-sm">
+                                    <div class="w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center">
+                                        <i class="fa-solid fa-clock text-gray-500 text-xs"></i>
+                                    </div>
+                                    <span class="text-gray-500">Confirming transaction</span>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 flex items-center justify-center gap-2 text-sm text-gray-500">
+                                <i class="fa-solid fa-shield-halved text-green-600"></i>
+                                <span>Secure 256-bit SSL Encrypted</span>
+                            </div>
+                        </div>
+
+                        <p class="text-center text-sm text-gray-500 mt-4">
+                            <i class="fa-solid fa-info-circle mr-1"></i>
+                            Do not refresh or close this page
+                        </p>
+                    </div>
+                </div>
+            `;
+
+            // Simulate payment gateway steps
+            setTimeout(() => {
+                // Update to step 2
+                document.querySelectorAll('.animate-pulse')[1].classList.remove('animate-pulse');
+                document.querySelectorAll('.animate-pulse')[1].classList.remove('bg-primary');
+                document.querySelectorAll('.animate-pulse')[1].classList.add('bg-green-500');
+                document.querySelectorAll('.animate-pulse')[1].innerHTML = '<i class="fa-solid fa-check text-white text-xs"></i>';
+                document.querySelectorAll('.text-gray-700')[1].classList.remove('text-gray-700');
+                
+                // Activate step 3
+                document.querySelectorAll('.bg-gray-300')[0].classList.remove('bg-gray-300');
+                document.querySelectorAll('.bg-gray-300')[0].classList.add('bg-primary', 'animate-pulse');
+                document.querySelectorAll('.text-gray-500')[2].classList.remove('text-gray-500');
+                document.querySelectorAll('.text-gray-500')[2].classList.add('text-gray-700');
+            }, 1500);
+
+            setTimeout(() => {
+                // Complete payment and save booking
+                bookingData.paymentMethod = paymentMethod;
+                bookingData.bookingId = 'BK' + Date.now();
+                bookingData.status = 'Confirmed';
+                bookingData.createdAt = new Date().toISOString();
+
+                const bookings = JSON.parse(localStorage.getItem('rentit_bookings') || '[]');
+                bookings.push(bookingData);
+                localStorage.setItem('rentit_bookings', JSON.stringify(bookings));
+
+                // Clear temp booking
+                localStorage.removeItem('temp_booking');
+
+                // Show success screen
+                document.querySelector('.max-w-7xl').innerHTML = `
+                    <div class="min-h-screen flex items-center justify-center px-4">
+                        <div class="max-w-md w-full">
+                            <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+                                <!-- Success Header -->
+                                <div class="bg-gradient-to-r from-green-500 to-emerald-600 p-8 text-center">
+                                    <div class="w-20 h-20 mx-auto bg-white rounded-full flex items-center justify-center mb-4 animate-bounce">
+                                        <i class="fa-solid fa-check text-green-600 text-4xl"></i>
+                                    </div>
+                                    <h2 class="text-3xl font-bold text-white mb-2">Payment Successful!</h2>
+                                    <p class="text-green-100">Your booking has been confirmed</p>
+                                </div>
+
+                                <!-- Booking Details -->
+                                <div class="p-6">
+                                    <div class="bg-gray-50 rounded-xl p-4 mb-6">
+                                        <div class="flex justify-between items-center mb-3">
+                                            <span class="text-sm text-gray-600">Booking ID</span>
+                                            <span class="font-bold text-slate-900">${bookingData.bookingId}</span>
+                                        </div>
+                                        <div class="flex justify-between items-center mb-3">
+                                            <span class="text-sm text-gray-600">Payment Method</span>
+                                            <span class="font-semibold text-slate-900">${methodNames[paymentMethod]}</span>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-sm text-gray-600">Amount Paid</span>
+                                            <span class="font-bold text-2xl text-green-600">₹${bookingData.total.toLocaleString()}</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="space-y-3 mb-6">
+                                        <div class="flex items-center gap-3 text-sm text-gray-700">
+                                            <i class="fa-solid fa-check-circle text-green-600"></i>
+                                            <span>Confirmation email sent</span>
+                                        </div>
+                                        <div class="flex items-center gap-3 text-sm text-gray-700">
+                                            <i class="fa-solid fa-check-circle text-green-600"></i>
+                                            <span>Booking details saved</span>
+                                        </div>
+                                        <div class="flex items-center gap-3 text-sm text-gray-700">
+                                            <i class="fa-solid fa-check-circle text-green-600"></i>
+                                            <span>Host has been notified</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <a href="/" class="px-4 py-3 bg-gray-100 hover:bg-gray-200 text-slate-900 font-bold rounded-xl transition text-center">
+                                            <i class="fa-solid fa-home mr-2"></i>Home
+                                        </a>
+                                        <a href="/my-bookings" class="px-4 py-3 bg-gradient-to-r from-primary to-blue-600 hover:from-primaryDark hover:to-blue-700 text-white font-bold rounded-xl transition text-center">
+                                            <i class="fa-solid fa-list mr-2"></i>My Bookings
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 text-center">
+                                <p class="text-sm text-gray-600 mb-2">Need help with your booking?</p>
+                                <div class="flex justify-center gap-4">
+                                    <a href="/contact" class="text-primary hover:underline text-sm font-semibold">
+                                        <i class="fa-solid fa-headset mr-1"></i>Contact Support
+                                    </a>
+                                    <a href="/policies#cancellation" class="text-primary hover:underline text-sm font-semibold">
+                                        <i class="fa-solid fa-info-circle mr-1"></i>Cancellation Policy
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }, 3500);
+        }
+    </script>
+</body>
+</html>

@@ -112,6 +112,10 @@ def booking():
 def booking_confirmation():
     return render_template('booking_confirmation.html')
 
+@app.route('/payment')
+def payment():
+    return render_template('payment.html')
+
 @app.route('/profile')
 def profile():
     return render_template('profile.html')

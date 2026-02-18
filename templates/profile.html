@@ -118,14 +118,58 @@
                 </div>
                 <div>
                     <label class="text-sm font-semibold text-gray-600">Phone Number</label>
-                    <p class="text-slate-900 mt-1">Not provided</p>
+                    <p class="text-slate-900 mt-1" id="detail-phone">Not provided</p>
                 </div>
                 <div>
                     <label class="text-sm font-semibold text-gray-600">Location</label>
-                    <p class="text-slate-900 mt-1">Ahmedabad, Gujarat</p>
+                    <p class="text-slate-900 mt-1" id="detail-location">Not provided</p>
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="edit-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-slate-900">Edit Profile</h3>
+                <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600 transition">
+                    <i class="fa-solid fa-times text-2xl"></i>
+                </button>
+            </div>
+
+            <form id="edit-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Full Name</label>
+                    <input type="text" id="edit-name" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Phone Number</label>
+                    <input type="tel" id="edit-phone" placeholder="+91 1234567890" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Location</label>
+                    <input type="text" id="edit-location" placeholder="City, State" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition">
+                </div>
+
+                <div class="flex gap-3 pt-4">
+                    <button type="button" onclick="closeEditModal()" class="flex-1 px-4 py-3 border border-gray-200 text-gray-700 rounded-xl font-bold hover:bg-gray-50 transition">
+                        Cancel
+                    </button>
+                    <button type="submit" class="flex-1 px-4 py-3 bg-primary text-white rounded-xl font-bold hover:bg-primaryDark transition">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="hidden fixed bottom-8 right-8 bg-slate-900 text-white px-6 py-4 rounded-xl shadow-2xl z-50 flex items-center gap-3">
+        <i class="fa-solid fa-check-circle text-green-400"></i>
+        <span id="toast-message">Profile updated successfully!</span>
     </div>
 
     <script src="/static/js/firebase-auth.js"></script>
@@ -142,6 +186,8 @@
             document.getElementById('profile-email').innerText = user.email || '';
             document.getElementById('detail-name').innerText = user.name || 'User';
             document.getElementById('detail-email').innerText = user.email || '';
+            document.getElementById('detail-phone').innerText = user.phone || 'Not provided';
+            document.getElementById('detail-location').innerText = user.location || 'Not provided';
             
             // Set profile picture
             const avatarDiv = document.getElementById('profile-avatar');
@@ -166,8 +212,73 @@
         });
 
         function editProfile() {
-            alert('Edit profile feature coming soon!');
+            const user = JSON.parse(localStorage.getItem('rentit_user') || 'null');
+            if (!user) return;
+
+            // Pre-fill form with current data
+            document.getElementById('edit-name').value = user.name || '';
+            document.getElementById('edit-phone').value = user.phone || '';
+            document.getElementById('edit-location').value = user.location || '';
+
+            // Show modal
+            document.getElementById('edit-modal').classList.remove('hidden');
         }
+
+        function closeEditModal() {
+            document.getElementById('edit-modal').classList.add('hidden');
+        }
+
+        // Handle form submission
+        document.getElementById('edit-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const user = JSON.parse(localStorage.getItem('rentit_user') || 'null');
+            if (!user) return;
+
+            // Update user data
+            user.name = document.getElementById('edit-name').value;
+            user.phone = document.getElementById('edit-phone').value;
+            user.location = document.getElementById('edit-location').value;
+
+            // Save to localStorage
+            localStorage.setItem('rentit_user', JSON.stringify(user));
+
+            // Update UI
+            document.getElementById('profile-name').innerText = user.name;
+            document.getElementById('detail-name').innerText = user.name;
+            document.getElementById('detail-phone').innerText = user.phone || 'Not provided';
+            document.getElementById('detail-location').innerText = user.location || 'Not provided';
+
+            // Update avatar if no photo
+            if (!user.photoURL) {
+                const initials = user.name ? user.name.charAt(0).toUpperCase() : 'U';
+                document.getElementById('profile-avatar').innerHTML = `<span class="text-3xl font-bold">${initials}</span>`;
+            }
+
+            // Close modal
+            closeEditModal();
+
+            // Show success toast
+            showToast('Profile updated successfully!');
+        });
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            toastMessage.innerText = message;
+            toast.classList.remove('hidden');
+            
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Close modal on outside click
+        document.getElementById('edit-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeEditModal();
+            }
+        });
     </script>
 </body>
 </html>
