@@ -18,12 +18,23 @@ db = None
 USE_FIREBASE = False
 
 try:
-    if os.path.exists("serviceAccountKey.json"):
+    # Try environment variable first (for Render deployment)
+    firebase_creds = os.getenv('FIREBASE_CREDENTIALS')
+    
+    if firebase_creds:
+        import json
+        cred_dict = json.loads(firebase_creds)
+        cred = credentials.Certificate(cred_dict)
+        firebase_admin.initialize_app(cred)
+        db = firestore.client()
+        USE_FIREBASE = True
+        print("✅ Firebase Connected Successfully! (from environment)")
+    elif os.path.exists("serviceAccountKey.json"):
         cred = credentials.Certificate("serviceAccountKey.json")
         firebase_admin.initialize_app(cred)
         db = firestore.client()
         USE_FIREBASE = True
-        print("✅ Firebase Connected Successfully!")
+        print("✅ Firebase Connected Successfully! (from file)")
     else:
         print("⚠️  Firebase credentials not found. Using mock data.")
 except Exception as e:

@@ -28,6 +28,7 @@ env/
 
 # Firebase Credentials (IMPORTANT - DO NOT PUSH!)
 serviceAccountKey.json
+firebase_env_value.txt
 
 # IDE
 .vscode/
