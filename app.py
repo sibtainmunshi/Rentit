@@ -288,6 +288,50 @@ def faqs():
     """
     return render_template('info_page.html', title='FAQs', icon='fa-circle-question', content=content)
 
+@app.route('/complaint')
+def complaint():
+    return render_template('complaint.html')
+
+@app.route('/api/submit-complaint', methods=['POST'])
+def submit_complaint():
+    """Submit complaint to Firebase"""
+    try:
+        data = request.get_json()
+        
+        # Validate required fields
+        required_fields = ['name', 'email', 'category', 'complaint']
+        for field in required_fields:
+            if field not in data or not data[field]:
+                return jsonify({"error": f"Missing required field: {field}"}), 400
+        
+        # Validate complaint length
+        if len(data['complaint']) < 20:
+            return jsonify({"error": "Complaint must be at least 20 characters"}), 400
+        
+        # Add metadata
+        from datetime import datetime
+        data['timestamp'] = datetime.now().isoformat()
+        data['status'] = 'pending'
+        
+        if USE_FIREBASE:
+            # Add to Firebase
+            doc_ref = db.collection('complaints').add(data)
+            return jsonify({
+                "success": True,
+                "message": "Complaint submitted successfully!",
+                "id": doc_ref[1].id
+            }), 201
+        else:
+            # For testing without Firebase
+            print("Complaint received:", data)
+            return jsonify({
+                "success": True,
+                "message": "Complaint submitted successfully! (Mock mode)"
+            }), 201
+            
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @app.route('/api/listings', methods=['GET'])
 def get_listings():
     category = request.args.get('category', 'products')

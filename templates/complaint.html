@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 50px;
+            background-color: white;
+        }
+        
+        h1 {
+            text-align: center;
+            color: black;
+        }
+        
+        form {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border: 1px solid white;
+        }
+        
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid white;
+        }
+        
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: green;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .message {
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 15px;
+            text-align: center;
+            display: none;
+        }
+        
+        .success {
+            background-color: lightgreen;
+            border: 1px solid green;
+        }
+        
+        .error {
+            background-color: lightcoral;
+            border: 1px solid red;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Complaint Box</h1>
+    
+    <div id="successMsg" class="message success">
+        Complaint submitted successfully!
+    </div>
+    
+    <div id="errorMsg" class="message error">
+        Error! Please try again.
+    </div>
+    
+    <form id="complaintForm">
+        <label>Name:</label>
+        <input type="text" id="name" required>
+        
+        <label>Email:</label>
+        <input type="email" id="email" required>
+        
+        <label>Phone:</label>
+        <input type="tel" id="phone">
+        
+        <label>Category:</label>
+        <select id="category" required>
+            <option value="">Select</option>
+            <option>Product Quality</option>
+            <option>Service Issue</option>
+            <option>Payment Problem</option>
+            <option>Booking Issue</option>
+            <option>Website Bug</option>
+            <option>Other</option>
+        </select>
+        
+        <label>Complaint:</label>
+        <textarea id="complaint" required></textarea>
+        
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        var form = document.getElementById('complaintForm');
+        var successMsg = document.getElementById('successMsg');
+        var errorMsg = document.getElementById('errorMsg');
+
+        form.onsubmit = function(e) {
+            
+            var data = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                category: document.getElementById('category').value,
+                complaint: document.getElementById('complaint').value
+            };
+
+            fetch('/api/submit-complaint', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            })
+            .then(function(response) {
+                if (response.ok) {
+                    successMsg.style.display = 'block';
+                    errorMsg.style.display = 'none';
+                    form.reset();
+                    setTimeout(function() {
+                        window.location.href = '/';
+                    }, 2000);
+                } else {
+                    errorMsg.style.display = 'block';
+                    successMsg.style.display = 'none';
+                }
+            })
+            .catch(function(error) {
+                errorMsg.style.display = 'block';
+                successMsg.style.display = 'none';
+            });
+        };
+    </script>
+</body>
+</html>

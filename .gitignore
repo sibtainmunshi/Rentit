@@ -1,6 +1,3 @@
-# Firebase Credentials (IMPORTANT - NEVER COMMIT!)
-serviceAccountKey.json
-
 # Python
 __pycache__/
 *.py[cod]
@@ -29,6 +26,9 @@ venv/
 ENV/
 env/
 
+# Firebase Credentials (IMPORTANT - DO NOT PUSH!)
+serviceAccountKey.json
+
 # IDE
 .vscode/
 .idea/
@@ -40,14 +40,18 @@ env/
 .DS_Store
 Thumbs.db
 
-# Environment Variables
-.env
-.env.local
-
 # Logs
 *.log
+
+# Environment variables
+.env
+.env.local
 
 # Database
 *.db
 *.sqlite
 *.sqlite3
+
+# Temporary files
+*.tmp
+*.temp
