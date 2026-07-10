@@ -105,14 +105,10 @@
                 <div class="border border-gray-200 rounded-xl p-6">
                     <h3 class="font-bold text-lg text-slate-900 mb-4">Item Details</h3>
                     <div class="flex gap-4">
-                        <img src="${booking.item.img}" class="w-24 h-24 rounded-xl object-cover" alt="${booking.item.title}">
+                        <img src="${booking.itemImage}" class="w-24 h-24 rounded-xl object-cover" alt="${booking.itemName}">
                         <div class="flex-1">
-                            <h4 class="font-bold text-slate-900 mb-1">${booking.item.title}</h4>
-                            <p class="text-sm text-gray-500 mb-2">${booking.item.price} ${booking.item.unit}</p>
-                            <div class="flex items-center gap-1">
-                                <i class="fa-solid fa-star text-yellow-500 text-xs"></i>
-                                <span class="text-xs font-bold">${booking.item.rating}</span>
-                            </div>
+                            <h4 class="font-bold text-slate-900 mb-1">${booking.itemName}</h4>
+                            <p class="text-sm text-gray-500 mb-2">${booking.itemPrice}</p>
                         </div>
                     </div>
                 </div>
@@ -133,9 +129,18 @@
 
                 <div class="border border-gray-200 rounded-xl p-6">
                     <h3 class="font-bold text-lg text-slate-900 mb-4">Delivery Address</h3>
-                    <p class="text-gray-700">${booking.address.line1}</p>
-                    <p class="text-gray-700">${booking.address.city}, ${booking.address.state} - ${booking.address.pincode}</p>
+                    <p class="text-gray-700">${booking.address}</p>
                     <p class="text-gray-700 mt-2"><i class="fa-solid fa-phone mr-2 text-primary"></i>${booking.phone}</p>
+                </div>
+
+                <div class="border border-gray-200 rounded-xl p-6">
+                    <h3 class="font-bold text-lg text-slate-900 mb-4">Payment Summary</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between"><span class="text-gray-600">Rental Amount</span><span class="font-semibold text-slate-900">₹${booking.rentalAmount}</span></div>
+                        <div class="flex justify-between"><span class="text-gray-600">Service Fee</span><span class="font-semibold text-slate-900">₹${booking.serviceFee}</span></div>
+                        <div class="flex justify-between"><span class="text-gray-600">Security Deposit</span><span class="font-semibold text-slate-900">₹${booking.deposit}</span></div>
+                        <div class="flex justify-between pt-2 border-t border-gray-200"><span class="font-bold text-slate-900">Total Paid</span><span class="font-bold text-primary">₹${booking.total}</span></div>
+                    </div>
                 </div>
 
                 ${booking.notes ? `

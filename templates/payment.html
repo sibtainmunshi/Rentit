@@ -486,18 +486,21 @@
 
             // Simulate payment gateway steps
             setTimeout(() => {
-                // Update to step 2
-                document.querySelectorAll('.animate-pulse')[1].classList.remove('animate-pulse');
-                document.querySelectorAll('.animate-pulse')[1].classList.remove('bg-primary');
-                document.querySelectorAll('.animate-pulse')[1].classList.add('bg-green-500');
-                document.querySelectorAll('.animate-pulse')[1].innerHTML = '<i class="fa-solid fa-check text-white text-xs"></i>';
+                // Update to step 2 (cache elements before mutating - querySelectorAll
+                // re-runs live, so removing the matched class mid-way shifts indices)
+                const step2Icon = document.querySelectorAll('.animate-pulse')[1];
+                step2Icon.classList.remove('animate-pulse', 'bg-primary');
+                step2Icon.classList.add('bg-green-500');
+                step2Icon.innerHTML = '<i class="fa-solid fa-check text-white text-xs"></i>';
                 document.querySelectorAll('.text-gray-700')[1].classList.remove('text-gray-700');
-                
+
                 // Activate step 3
-                document.querySelectorAll('.bg-gray-300')[0].classList.remove('bg-gray-300');
-                document.querySelectorAll('.bg-gray-300')[0].classList.add('bg-primary', 'animate-pulse');
-                document.querySelectorAll('.text-gray-500')[2].classList.remove('text-gray-500');
-                document.querySelectorAll('.text-gray-500')[2].classList.add('text-gray-700');
+                const step3Icon = document.querySelectorAll('.bg-gray-300')[0];
+                step3Icon.classList.remove('bg-gray-300');
+                step3Icon.classList.add('bg-primary', 'animate-pulse');
+                const step3Label = document.querySelectorAll('.text-gray-500')[2];
+                step3Label.classList.remove('text-gray-500');
+                step3Label.classList.add('text-gray-700');
             }, 1500);
 
             setTimeout(() => {
